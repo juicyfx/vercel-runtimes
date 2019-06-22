@@ -34,6 +34,10 @@ Mainly for PHP with focus on latest versions and more proprietal configurations.
 | [`@juicyfx/php`](src/now-php)| ❌ | `@juicyfx/php@0.0.1-canary.12` | High-level PHP wrapper based on PHP bridge which defines entrypoints, lambda and user files. |
 | [`@juicyfx/php-bridge`](src/now-php-bridge) | ❌ | `@juicyfx/php-bridge0.0.1-canary.47`| Low-level PHP wrapper with compiled PHP binaries and shared libraries. Provide FCGI client for PHP builder. |
 
+**Extensions**
+
+- bcmath, bz2, calendar, Core, ctype, curl, date, dom, exif, fileinfo, filter, ftp, gettext, hash, iconv, json, libxml, mbstring, mysqli, mysqlnd, openssl, pcntl, pcre, PDO, pdo_mysql, pdo_pgsql, pdo_sqlite, Phar, readline, Reflection, session, SimpleXML, soap, sockets, sodium, SPL, sqlite3, standard, tokenizer, wddx, xml, xmlreader, xmlrpc, xmlwriter, xsl, Zend OPcache, zlib
+
 ### ⚙️ Usage
 
 There is prepared builder for your PHP lambdas `@juicyfx/php`.
