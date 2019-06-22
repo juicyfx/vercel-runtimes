@@ -1,15 +1,15 @@
-# JuicyFx Now Builders
+<h1 align=center>JuicyFx Now Builders</h1>
 
 <p align=center>
-The main goal is to provide experimental Now Builders on steroids.
+The main goal is to provide experimental Now Builders on steroids. <br/>
 Mainly for PHP with focus on latest versions and more proprietal configurations.
 </p>
 
 <p align=center>
-👤 <a href="https://github.com/f3l1x">f3l1x</a> | 🐦 <a href="https://twitter.com/f3l1x">@xf3l1x</a>
+🕹 <a href="https://f3l1x.io">f3l1x.io</a> | 💻 <a href="https://github.com/f3l1x">f3l1x</a> | 🐦 <a href="https://twitter.com/xf3l1x">@xf3l1x</a>
 </p>
 
-## Resources
+## 📚 Resources
 
 - `now builders`: https://github.com/zeit/now-builders
 - `@now/php`: https://zeit.co/docs/v2/deployments/official-builders/php-now-php/
@@ -21,16 +21,22 @@ Mainly for PHP with focus on latest versions and more proprietal configurations.
 
 **PHP versions**
 
-- PHP 7.3
+- PHP 7.1 ❌
+- PHP 7.2 ❌
+- PHP 7.3 ✅
+- PHP 7.4 🔜
+- PHP 8.0 🔥
 
 **Packages**
 
-- [`@juicyfx/php`](src/now-php) - High-level PHP wrapper used with PHP bridge.
-- [`@juicyfx/php-bridge`](src/now-php-bridge) - Contains compiled PHP binaries with shared libraries. Provide FCGI client wrapper for PHP builder. 
+| Package | Stable | Canary | Description |
+|---------|--------|--------|-------------|
+| [`@juicyfx/php`](src/now-php)| ❌ | `@juicyfx/php@0.0.1-canary.12` | High-level PHP wrapper based on PHP bridge which defines entrypoints, lambda and user files. |
+| [`@juicyfx/php-bridge`](src/now-php-bridge) | ❌ | `@juicyfx/php-bridge0.0.1-canary.47`| Low-level PHP wrapper with compiled PHP binaries and shared libraries. Provide FCGI client for PHP builder. |
 
 ### ⚙️ Usage
 
-There is prepared build for your PHP lambdas `@juicyfx/php`.
+There is prepared builder for your PHP lambdas `@juicyfx/php`.
 
 ```
 {
