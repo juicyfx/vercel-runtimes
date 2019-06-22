@@ -4,18 +4,21 @@ const glob = require('@now/build-utils/fs/glob.js'); // eslint-disable-line impo
 const path = require('path');
 
 async function getFiles() {
+  // Lookup for all files in native folder
   const files = await glob('native/**', __dirname);
 
-  const phpConfig = await FileBlob.fromStream({
+  // Replace paths in php.ini file
+  const phpini = await FileBlob.fromStream({
     stream: files['native/php.ini'].toStream(),
   });
-  phpConfig.data = phpConfig.data
+  phpini.data = phpini.data
     .toString()
     .replace(/\/opt\/now\/modules/g, '/var/task/native/modules');
-  files['native/php.ini'] = phpConfig;
+  files['native/php.ini'] = phpini;
 
-  console.log(phpConfig);
+  console.log(phpini.data.toString());
 
+  // Provide FCGCI client files manually
   Object.assign(files, {
     'fastcgi/connection.js': new FileFsRef({
       fsPath: require.resolve('fastcgi-client/lib/connection.js'),

@@ -40,10 +40,6 @@ exports.build = async ({
   const userFiles = rename(includedFiles, name => path.join('user', name));
   const bridgeFiles = await getFiles();
 
-  // TODO config.extensions. OR php.ini from user
-  delete bridgeFiles['native/modules/mysqli.so'];
-  delete bridgeFiles['native/modules/libmysqlclient.so.16'];
-
   console.log('User files:', Object.keys(userFiles));
   console.log('Bridge files:', Object.keys(bridgeFiles));
   console.log('Entrypoint:', entrypoint);
@@ -51,7 +47,7 @@ exports.build = async ({
   const lambda = await createLambda({
     files: { ...userFiles, ...bridgeFiles },
     handler: 'launcher.launcher',
-    runtime: 'nodejs8.10',
+    runtime: 'nodejs10.x',
     environment: {
       NOW_ENTRYPOINT: entrypoint,
     },

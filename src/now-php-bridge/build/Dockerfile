@@ -5,8 +5,11 @@ RUN yum install -y \
         https://rpms.remirepo.net/enterprise/remi-release-7.rpm \
         epel-release \
         yum-utils && \
-    yum-config-manager --enable remi-php73 && \
-    yum update -y 
+    yum-config-manager --enable epel remi-php73 && \
+    yum update -y && \
+    yum upgrade -y
+
+RUN yum install -y patchelf
 
 RUN yum install -y \
         php73-php-bcmath \
@@ -28,8 +31,7 @@ RUN yum install -y \
         php73-php-xml \
         php73-php-xmlrpc
 
-RUN yum install -y patchelf
-
+# $ORIGIN refers to the current directory, don't evaluate it, use the single quotes
 RUN patchelf --set-rpath '$ORIGIN' /usr/bin/php73
 RUN patchelf --set-rpath '$ORIGIN' /opt/remi/php73/root/usr/sbin/php-fpm
 RUN patchelf --set-rpath '$ORIGIN' /opt/remi/php73/root/usr/lib64/php/modules/bcmath.so
@@ -71,5 +73,5 @@ RUN patchelf --set-rpath '$ORIGIN' /opt/remi/php73/root/usr/lib64/php/modules/xs
 
 WORKDIR /opt/now
 
-COPY ./conf /opt/now/
-COPY ./scripts /opt/now/
+ADD ./conf /opt/now/
+ADD ./scripts /opt/now/

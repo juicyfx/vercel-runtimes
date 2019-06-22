@@ -102,8 +102,6 @@ async function transformFromAwsRequest({
     }
   }
 
-  console.log({ params, stdin: body });
-
   return { params, stdin: body };
 }
 
@@ -125,13 +123,6 @@ function transformToAwsResponse({ tuples, body }) {
     }
   }
 
-  console.log({
-    statusCode,
-    headers,
-    body: body.toString('base64'),
-    encoding: 'base64',
-  });
-
   return {
     statusCode,
     headers,
@@ -141,7 +132,6 @@ function transformToAwsResponse({ tuples, body }) {
 }
 
 async function launcher(event) {
-  console.log(event);
   const awsRequest = normalizeEvent(event);
   const input = await transformFromAwsRequest(awsRequest);
   const output = await query(input);

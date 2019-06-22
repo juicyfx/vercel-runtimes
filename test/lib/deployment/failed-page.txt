@@ -1,3 +1,0 @@
-An error occurred with this application.
-
-NO_STATUS_CODE_FROM_LAMBDA

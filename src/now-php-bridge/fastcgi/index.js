@@ -19,21 +19,27 @@ let connection;
 async function startPhp() {
   assert(!connection);
 
+  console.log('Starting PHP');
+
   const child = spawn(
     './php-fpm',
     ['-c', 'php.ini', '--fpm-config', 'php-fpm.ini', '--nodaemonize'],
     {
       stdio: 'inherit',
       cwd: '/var/task/native',
+      env: {
+        LD_LIBRARY_PATH: '/var/task/native/modules:' + (process.env.LD_LIBRARY_PATH || '')
+      }
     },
   );
 
-  child.on('exit', () => {
-    console.error('php exited');
+  child.on('exit', (code) => {
+    console.error(`php exited with code ${code}`);
     process.exit(1);
   });
 
   child.on('error', (error) => {
+    console.error('php errored');
     console.error(error);
     process.exit(1);
   });
