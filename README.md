@@ -37,21 +37,21 @@ bcmath, bz2, calendar, Core, ctype, curl, date, dom, exif, fileinfo, filter, ftp
 
 | Package | Stable | Canary | Description |
 |---------|--------|--------|-------------|
-| [`@juicyfx/php`](src/php)| `@juicyfx/php@0.0.2` | `@juicyfx/php@0.0.3-canary.0` | PHP builder based on PHP FPM. |
-| [`@juicyfx/php-next`](src/php-next) | ❌ | `@juicyfx/php-next`| PHP builder based on pure PHP. |
+| [`@juicyfx/php`](src/php)| `0.0.2` | `0.0.3-canary.0` | PHP builder based on PHP FPM. |
+| [`@juicyfx/php-next`](src/php-next) | ❌ | ❌ | PHP builder based on pure PHP. |
 
 **PHP bridges**
 
 | Package | Stable | Canary | Description |
 |---------|--------|--------|-------------|
-| [`@juicyfx/php-fpm`](src/php-fpm) | `@juicyfx/php-fpm@0.0.2` | `@juicyfx/php-fpm@0.0.3-canary.0`| PHP launcher based on FCGI client. |
-| [`@juicyfx/php-pure`](src/php-pure) | ❌ | `@juicyfx/php-pure`| Pure PHP launcher. |
+| [`@juicyfx/php-fpm`](src/php-fpm) | `0.0.2` | `0.0.3-canary.0` | PHP launcher based on FCGI client. |
+| [`@juicyfx/php-pure`](src/php-pure) | ❌ | ❌ | Pure PHP launcher. |
 
 **PHP libraries**
 
 | Package | Stable | Canary | Description |
 |---------|--------|--------|-------------|
-| [`@juicyfx/php-lib-73`](src/php-lib-73) | `@juicyfx/php-lib-73@0.0.2` | `@juicyfx/php-lib-73@0.0.2-canary.0`| PHP 7.3 binaries and shared libraries. |
+| [`@juicyfx/php-lib-73`](src/php-lib-73) | `0.0.2` | `0.0.3-canary.0` | PHP 7.3 binaries and shared libraries. |
 
 
 ### ⚙️ Usage
@@ -60,16 +60,17 @@ There is prepared builder for your PHP lambdas `@juicyfx/php`.
 
 ```
 {
-    "version": 2,
-    "builds": [
-      { "src": "index.php", "use": "@juicyfx/php" }
-    ]
-  }
+  "version": 2,
+  "builds": [
+    { "src": "index.php", "use": "@juicyfx/php" }
+  ]
+}
 ```
 
 ### 🚀 Roadmap
 
-- Support more PHP versions 7.2, 7.3, 7.4
+- Support more PHP versions 7.1, 7.2, 7.4, 8.0
+- Support more PHP extensions
 - Resolve known issues (**HELP WANTED**)
 
 ### 🤔 Known Issues
