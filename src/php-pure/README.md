@@ -1,4 +1,4 @@
-# @juicyfx/php-bridge
+# @juicyfx/php-fpm
 
 ## Usage
 

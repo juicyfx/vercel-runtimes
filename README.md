@@ -27,16 +27,32 @@ Mainly for PHP with focus on latest versions and more proprietal configurations.
 - PHP 7.4 🔜
 - PHP 8.0 🔥
 
-**Packages**
+**Extensions**
+
+bcmath, bz2, calendar, Core, ctype, curl, date, dom, exif, fileinfo, filter, ftp, gettext, hash, iconv, json, libxml, mbstring, mysqli, mysqlnd, openssl, pcntl, pcre, PDO, pdo_mysql, pdo_pgsql, pdo_sqlite, Phar, readline, Reflection, session, SimpleXML, soap, sockets, sodium, SPL, sqlite3, standard, tokenizer, wddx, xml, xmlreader, xmlrpc, xmlwriter, xsl, Zend OPcache, zlib
+
+### Packages
+
+**PHP builders**
 
 | Package | Stable | Canary | Description |
 |---------|--------|--------|-------------|
-| [`@juicyfx/php`](src/now-php)| ❌ | `@juicyfx/php@0.0.1-canary.12` | High-level PHP wrapper based on PHP bridge which defines entrypoints, lambda and user files. |
-| [`@juicyfx/php-bridge`](src/now-php-bridge) | ❌ | `@juicyfx/php-bridge0.0.1-canary.47`| Low-level PHP wrapper with compiled PHP binaries and shared libraries. Provide FCGI client for PHP builder. |
+| [`@juicyfx/php`](src/php)| `@juicyfx/php@0.0.2` | `@juicyfx/php@0.0.3-canary.0` | PHP builder based on PHP FPM. |
+| [`@juicyfx/php-next`](src/php-next) | ❌ | `@juicyfx/php-next`| PHP builder based on pure PHP. |
 
-**Extensions**
+**PHP bridges**
 
-- bcmath, bz2, calendar, Core, ctype, curl, date, dom, exif, fileinfo, filter, ftp, gettext, hash, iconv, json, libxml, mbstring, mysqli, mysqlnd, openssl, pcntl, pcre, PDO, pdo_mysql, pdo_pgsql, pdo_sqlite, Phar, readline, Reflection, session, SimpleXML, soap, sockets, sodium, SPL, sqlite3, standard, tokenizer, wddx, xml, xmlreader, xmlrpc, xmlwriter, xsl, Zend OPcache, zlib
+| Package | Stable | Canary | Description |
+|---------|--------|--------|-------------|
+| [`@juicyfx/php-fpm`](src/php-fpm) | `@juicyfx/php-fpm@0.0.2` | `@juicyfx/php-fpm@0.0.3-canary.0`| PHP launcher based on FCGI client. |
+| [`@juicyfx/php-pure`](src/php-pure) | ❌ | `@juicyfx/php-pure`| Pure PHP launcher. |
+
+**PHP libraries**
+
+| Package | Stable | Canary | Description |
+|---------|--------|--------|-------------|
+| [`@juicyfx/php-lib-73`](src/php-lib-73) | `@juicyfx/php-lib-73@0.0.2` | `@juicyfx/php-lib-73@0.0.2-canary.0`| PHP 7.3 binaries and shared libraries. |
+
 
 ### ⚙️ Usage
 
@@ -46,7 +62,7 @@ There is prepared builder for your PHP lambdas `@juicyfx/php`.
 {
     "version": 2,
     "builds": [
-      { "src": "index.php", "use": "@juicyfx/php@0.0.1-canary.12" }
+      { "src": "index.php", "use": "@juicyfx/php" }
     ]
   }
 ```

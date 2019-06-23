@@ -1,9 +1,9 @@
 {
-  "name": "@juicyfx/php-bridge",
-  "version": "0.0.1-canary.47",
+  "name": "@juicyfx/php-pure",
+  "version": "0.0.1-canary.0",
   "license": "MIT",
   "dependencies": {
-    "fastcgi-client": "0.0.1"
+    "@juicyfx/php-lib-73": "^0.0.1-canary.0"
   },
   "devDependencies": {
     "@now/build-utils": "^0.6.0"

@@ -1,5 +1,5 @@
-DOCKER_IMAGE=juicyfx-now-php
-DOCKER_CONTAINER=juicyfx-now-php
+DOCKER_IMAGE=juicyfx-now-php-73
+DOCKER_CONTAINER=juicyfx-now-php-73
 
 .PHONY: build compile fresh publish 
 

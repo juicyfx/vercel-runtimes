@@ -15,5 +15,9 @@
         <li><a href="/tracy.php">Tracy Debugger</a></li>
         <li><a href="/checker.php">Nette Checker</a></li>
     </ul>
+
+    <hr>
+
+    Copyright &copy; <?=date('Y')?>
 </body>
 </html>

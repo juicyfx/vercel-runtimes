@@ -1,0 +1,8 @@
+{
+  "name": "@juicyfx/php",
+  "version": "0.0.2",
+  "license": "MIT",
+  "dependencies": {
+    "@juicyfx/php-fpm": "^0.0.2"
+  }
+}

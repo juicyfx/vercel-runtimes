@@ -1,0 +1,8 @@
+{
+  "name": "@juicyfx/php-next",
+  "version": "0.0.1-canary.0",
+  "license": "MIT",
+  "dependencies": {
+    "@juicyfx/php-pure": "^0.0.1-canary.0"
+  }
+}

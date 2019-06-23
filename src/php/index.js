@@ -6,7 +6,7 @@ const {
   shouldServe,
 } = require('@now/build-utils'); // eslint-disable-line import/no-extraneous-dependencies
 const path = require('path');
-const { getFiles } = require('@juicyfx/php-bridge');
+const { getFiles } = require('@juicyfx/php-fpm');
 
 exports.config = {
   maxLambdaSize: '40mb',

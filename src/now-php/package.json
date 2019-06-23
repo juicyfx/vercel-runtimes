@@ -1,8 +1,0 @@
-{
-  "name": "@juicyfx/php",
-  "version": "0.0.1-canary.12",
-  "license": "MIT",
-  "dependencies": {
-    "@juicyfx/php-bridge": "^0.0.1-canary.45"
-  }
-}

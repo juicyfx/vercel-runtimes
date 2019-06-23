@@ -5,6 +5,9 @@
     "regions": ["bru1"],
     "public": true,
     "builds": [
-      { "src": "*.php", "use": "@juicyfx/php@0.0.1-canary.12" }
-    ]
+      { "src": "*.php", "use": "@juicyfx/php" }
+    ],
+    "env": {
+      "REV": "1"
+    }
   }
