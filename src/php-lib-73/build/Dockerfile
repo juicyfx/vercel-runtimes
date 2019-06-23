@@ -14,6 +14,7 @@ RUN yum install -y patchelf
 RUN yum install -y \
         php73-php-bcmath \
         php73-php-cli \
+        php73-php-cgi \
         php73-php-fpm \
         php73-php-gd \
         php73-php-imap \
@@ -33,6 +34,7 @@ RUN yum install -y \
 
 # $ORIGIN refers to the current directory, don't evaluate it, use the single quotes
 RUN patchelf --set-rpath '$ORIGIN' /usr/bin/php73
+RUN patchelf --set-rpath '$ORIGIN' /usr/bin/php73-cgi
 RUN patchelf --set-rpath '$ORIGIN' /opt/remi/php73/root/usr/sbin/php-fpm
 RUN patchelf --set-rpath '$ORIGIN' /opt/remi/php73/root/usr/lib64/php/modules/bcmath.so
 RUN patchelf --set-rpath '$ORIGIN' /opt/remi/php73/root/usr/lib64/php/modules/bz2.so

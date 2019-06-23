@@ -1,0 +1,11 @@
+{
+  "name": "@juicyfx/php-cli",
+  "version": "0.0.1-canary.1",
+  "license": "MIT",
+  "dependencies": {
+    "@juicyfx/php-lib-73": "^0.0.3-canary.0"
+  },
+  "devDependencies": {
+    "@now/build-utils": "^0.6.0"
+  }
+}

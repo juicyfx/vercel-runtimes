@@ -13,7 +13,13 @@ distribution:
 	docker rm --force ${DOCKER_CONTAINER} || true
 	docker run -it -d --name ${DOCKER_CONTAINER} ${DOCKER_IMAGE} /bin/bash
 	docker exec ${DOCKER_CONTAINER} /bin/cat /usr/bin/php73 > ./native/php
+	docker exec ${DOCKER_CONTAINER} /bin/cat /usr/bin/php73-cgi > ./native/php-cgi
 	docker exec ${DOCKER_CONTAINER} /bin/cat /opt/remi/php73/root/usr/sbin/php-fpm > ./native/php-fpm
+	chmod +x ./native/php
+	chmod +x ./native/php-cgi
+	chmod +x ./native/php-fpm
+	docker exec ${DOCKER_CONTAINER} /bin/cat /opt/now/php.ini > ./native/php.ini
+	docker exec ${DOCKER_CONTAINER} /bin/cat /opt/now/php-fpm.ini > ./native/php-fpm.ini
 	docker exec ${DOCKER_CONTAINER} /bin/cat /opt/remi/php73/root/usr/lib64/php/modules/bcmath.so > ./native/modules/bcmath.so
 	docker exec ${DOCKER_CONTAINER} /bin/cat /opt/remi/php73/root/usr/lib64/php/modules/bz2.so > ./native/modules/bz2.so
 	docker exec ${DOCKER_CONTAINER} /bin/cat /opt/remi/php73/root/usr/lib64/php/modules/calendar.so > ./native/modules/calendar.so
@@ -51,8 +57,6 @@ distribution:
 	docker exec ${DOCKER_CONTAINER} /bin/cat /opt/remi/php73/root/usr/lib64/php/modules/xmlrpc.so > ./native/modules/xmlrpc.so
 	docker exec ${DOCKER_CONTAINER} /bin/cat /opt/remi/php73/root/usr/lib64/php/modules/xmlwriter.so > ./native/modules/xmlwriter.so
 	docker exec ${DOCKER_CONTAINER} /bin/cat /opt/remi/php73/root/usr/lib64/php/modules/xsl.so  > ./native/modules/xsl.so
-	docker exec ${DOCKER_CONTAINER} /bin/cat /opt/now/php.ini > ./native/php.ini
-	docker exec ${DOCKER_CONTAINER} /bin/cat /opt/now/php-fpm.ini > ./native/php-fpm.ini
 	docker exec ${DOCKER_CONTAINER} /bin/cat /usr/lib64/libcrypt.so.1  > ./native/modules/libcrypt.so.1
 	docker exec ${DOCKER_CONTAINER} /bin/cat /usr/lib64/libargon2.so.0  > ./native/modules/libargon2.so.0
 	docker exec ${DOCKER_CONTAINER} /bin/cat /usr/lib64/libsystemd.so.0  > ./native/modules/libsystemd.so.0
@@ -91,8 +95,6 @@ distribution:
 	docker exec ${DOCKER_CONTAINER} /bin/cat /usr/lib64/libaudit.so.1  > ./native/modules/libaudit.so.1
 	docker exec ${DOCKER_CONTAINER} /bin/cat /usr/lib64/libcap-ng.so.0  > ./native/modules/libcap-ng.so.0
 	docker rm --force ${DOCKER_CONTAINER} || true
-	chmod +x ./native/php-fpm
-	chmod +x ./native/php
 
 test-php:
 	$(MAKE) build

@@ -1,9 +1,9 @@
 {
   "name": "@juicyfx/php-fpm",
-  "version": "0.0.2",
+  "version": "0.0.3-canary.1",
   "license": "MIT",
   "dependencies": {
-    "@juicyfx/php-lib-73": "^0.0.2",
+    "@juicyfx/php-lib-73": "^0.0.3-canary.0",
     "fastcgi-client": "0.0.1"
   },
   "devDependencies": {

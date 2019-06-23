@@ -9,18 +9,17 @@ Mainly for PHP with focus on latest versions and more proprietal configurations.
 🕹 <a href="https://f3l1x.io">f3l1x.io</a> | 💻 <a href="https://github.com/f3l1x">f3l1x</a> | 🐦 <a href="https://twitter.com/xf3l1x">@xf3l1x</a>
 </p>
 
-## 📚 Resources
-
-- `now builders`: https://github.com/zeit/now-builders
-- `@now/php`: https://zeit.co/docs/v2/deployments/official-builders/php-now-php/
-- `bref.sh`: https://github.com/brefphp/bref
-- `stackery`: https://github.com/stackery/php-lambda-layer
-- `umutc`: https://github.com/umutc/aws-lambda-layer-php73/
-
 ## 🐘 PHP
+
+**PHP**
+
+- CGI ✅🚧
+- CLI ✅
+- FPM ✅🚧🚧
 
 **PHP versions**
 
+- PHP 5.6 ❌
 - PHP 7.1 ❌
 - PHP 7.2 ❌
 - PHP 7.3 ✅
@@ -31,21 +30,21 @@ Mainly for PHP with focus on latest versions and more proprietal configurations.
 
 bcmath, bz2, calendar, Core, ctype, curl, date, dom, exif, fileinfo, filter, ftp, gettext, hash, iconv, json, libxml, mbstring, mysqli, mysqlnd, openssl, pcntl, pcre, PDO, pdo_mysql, pdo_pgsql, pdo_sqlite, Phar, readline, Reflection, session, SimpleXML, soap, sockets, sodium, SPL, sqlite3, standard, tokenizer, wddx, xml, xmlreader, xmlrpc, xmlwriter, xsl, Zend OPcache, zlib
 
-### Packages
+### 📦 Packages
 
 **PHP builders**
 
 | Package | Stable | Canary | Description |
 |---------|--------|--------|-------------|
-| [`@juicyfx/php`](src/php)| `0.0.2` | `0.0.3-canary.0` | PHP builder based on PHP FPM. |
-| [`@juicyfx/php-next`](src/php-next) | ❌ | ❌ | PHP builder based on pure PHP. |
+| [`@juicyfx/php`](src/php)| `0.0.2` | `0.0.3-canary.5` | PHP builder based on PHP FPM. |
 
 **PHP bridges**
 
 | Package | Stable | Canary | Description |
 |---------|--------|--------|-------------|
-| [`@juicyfx/php-fpm`](src/php-fpm) | `0.0.2` | `0.0.3-canary.0` | PHP launcher based on FCGI client. |
-| [`@juicyfx/php-pure`](src/php-pure) | ❌ | ❌ | Pure PHP launcher. |
+| [`@juicyfx/php-fpm`](src/php-fpm) | `0.0.2` | `0.0.3-canary.1` | PHP FPM launcher with Node.js FCGI client. |
+| [`@juicyfx/php-cgi`](src/php-fpm) | ❌ | `0.0.1-canary.4` | PHP CGI launcher. |
+| [`@juicyfx/php-cli`](src/php-cli) | ❌ | `0.0.1-canary.1` | PHP CLI launcher. |
 
 **PHP libraries**
 
@@ -53,19 +52,37 @@ bcmath, bz2, calendar, Core, ctype, curl, date, dom, exif, fileinfo, filter, ftp
 |---------|--------|--------|-------------|
 | [`@juicyfx/php-lib-73`](src/php-lib-73) | `0.0.2` | `0.0.3-canary.0` | PHP 7.3 binaries and shared libraries. |
 
+**Speed**
+
+- CGI - ~28ms
+- FPM - ~270ms 😢
+- CLI - ~24ms
 
 ### ⚙️ Usage
 
 There is prepared builder for your PHP lambdas `@juicyfx/php`.
 
+**Minimal**
+
 ```
 {
   "version": 2,
   "builds": [
-    { "src": "index.php", "use": "@juicyfx/php" }
+    { 
+      "src": "index.php", 
+      "use": "@juicyfx/php",
+      "config": {...}
+    }
   ]
 }
 ```
+
+**Config**
+
+- `mode` [optional]
+  - Set the PHP launcher (bridge). 
+  - Type: string
+  - Default: cgi
 
 ### 🚀 Roadmap
 
@@ -75,7 +92,7 @@ There is prepared builder for your PHP lambdas `@juicyfx/php`.
 
 ### 🤔 Known Issues
 
-- Uncaught Exception - socket hang up
+- PHP-FPM - Uncaught Exception - socket hang up
     - This is known issue and I would apreaciate any help. 
 
     ```
@@ -90,14 +107,35 @@ There is prepared builder for your PHP lambdas `@juicyfx/php`.
 
 ### 👀 Examples
 
-- index - https://now-builders-php-f3l1x.juicyfx1.now.sh
-- phpinfo - https://now-builders-php-f3l1x.juicyfx1.now.sh/phpinfo.php
-- dumps - https://now-builders-php-f3l1x.juicyfx1.now.sh/dump.php
-- Tracy Debugger - https://now-builders-php-f3l1x.juicyfx1.now.sh/tracy.php
-- Nette Checker - https://now-builders-php-f3l1x.juicyfx1.now.sh/checker.php
+**CGI**
+
+- phpinfo - https://now-builders-php-cgi-f3l1x.juicyfx1.now.sh/
+
+**FPM**
+
+- index - https://now-builders-php-fpm-f3l1x.juicyfx1.now.sh/
+- phpinfo - https://now-builders-php-fpm-f3l1x.juicyfx1.now.sh/phpinfo.php
+- dumps - https://now-builders-php-fpm-f3l1x.juicyfx1.now.sh/dump.php
+- Tracy Debugger - https://now-builders-php-fpm-f3l1x.juicyfx1.now.sh/tracy.php
+- Nette Checker - https://now-builders-php-fpm-f3l1x.juicyfx1.now.sh/checker.php
+
+**CLI**
+
+- phpinfo - https://now-builders-php-cli-f3l1x.juicyfx1.now.sh/
+
 
 ![](docs/phpinfo.png)
 
+## 📚 Resources
+
+- `now builders`: https://github.com/zeit/now-builders
+- `@now/php`: https://zeit.co/docs/v2/deployments/official-builders/php-now-php/
+- `bref.sh`: https://github.com/brefphp/bref
+- `stackery`: https://github.com/stackery/php-lambda-layer
+- https://github.com/umutc/aws-lambda-layer-php73/
+- https://github.com/ArtisanHost/php-cgi-lambda-build-script
+- https://github.com/stechstudio/php-lambda
+- https://github.com/araines/serverless-php
 
 ## 📝 License
 

@@ -33,8 +33,13 @@ async function startPhp() {
     },
   );
 
-  child.on('exit', (code) => {
-    console.error(`php exited with code ${code}`);
+  child.on('exit', (code, signal) => {
+    console.error(`php exited with code ${code} and signal ${signal}`);
+    process.exit(1);
+  });
+
+  child.on('close', (code, signal) => {
+    console.error(`php closed with code ${code} and signal ${signal}`);
     process.exit(1);
   });
 
