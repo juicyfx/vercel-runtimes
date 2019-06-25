@@ -1,11 +1,11 @@
 {
   "name": "@juicyfx/php",
-  "version": "0.0.3-1",
+  "version": "0.0.6",
   "license": "MIT",
   "dependencies": {
-    "@juicyfx/php-fpm": "^0.0.3",
-    "@juicyfx/php-cli": "^0.0.1",
-    "@juicyfx/php-cgi": "^0.0.1",
-    "@juicyfx/php-server": "^0.0.1"
+    "fastcgi-client": "0.0.1"
+  },
+  "devDependencies": {
+    "@now/build-utils": "0.6.0"
   }
 }

@@ -1,22 +1,17 @@
+const path = require('path');
+const fs = require('fs');
+const { promisify } = require('util');
 const {
   createLambda,
   rename,
   glob,
   download,
   shouldServe,
+  runNpmInstall
 } = require('@now/build-utils');
-const path = require('path');
-// PHP modes
-const phpfpm = require('@juicyfx/php-fpm');
-const phpcgi = require('@juicyfx/php-cgi');
-const phpcli = require('@juicyfx/php-cli');
-const phpserver = require('@juicyfx/php-server');
-
-exports.config = {
-  maxLambdaSize: '20mb',
-};
-
-exports.shouldServe = shouldServe;
+const launchers = require('./launchers');
+const configuration = require('./config');
+const writeFile = promisify(fs.writeFile);
 
 async function getIncludedFiles({ files, workPath, config, meta }) {
   // Download all files to workPath
@@ -43,28 +38,57 @@ async function getIncludedFiles({ files, workPath, config, meta }) {
   return includedFiles;
 }
 
-async function getBridgeFiles(config) {
-  let files;
+async function installPhp({ workPath, config }) {
+  console.log('Installing PHP libs 🚀');
 
-  if (!config || !config.mode || config.mode === 'server') {
-    files = await phpserver.getFiles();
+  // Install defined PHP version on the fly into the tmp folder
+  const packageJson = {
+    dependencies: {
+      [configuration.getPhpNpm(config)]: 'canary',
+      '@now/build-utils': 'canary'
+    }
+  };
+
+  const packageJsonPath = path.join(workPath, 'package.json');
+  await writeFile(packageJsonPath, JSON.stringify(packageJson));
+
+  await runNpmInstall(path.dirname(packageJsonPath), [
+    '--prod',
+    '--prefer-offline',
+  ]);
+
+  console.log('Installing PHP libs ✅');
+}
+
+async function getPhpFiles({ workPath, config }) {
+  await installPhp({ workPath, config });
+
+  // Resolve dynamically installed PHP lib package in tmp folder
+  const phpLibPkgPath = path.dirname(path.join(workPath, 'package.json'))
+    + '/node_modules/'
+    + configuration.getPhpNpm(config);
+
+  const phpLibPkg = require(phpLibPkgPath);
+
+  // Every PHP version MUST have getFiles method!
+  const files = await phpLibPkg.getFiles();
+  const mode = configuration.getMode(config);
+
+  if (mode === 'server') {
     delete files['native/php-cgi'];
     delete files['native/php-fpm'];
     delete files['native/php-fpm.ini'];
 
-  } else if (config.mode === 'fpm') {
-    files = await phpfpm.getFiles();
+  } else if (mode === 'fpm') {
     delete files['native/php'];
     delete files['native/php-cgi'];
 
-  } else if (config.mode === 'cli') {
-    files = await phpcli.getFiles();
+  } else if (mode === 'cli') {
     delete files['native/php-cgi'];
     delete files['native/php-fpm'];
     delete files['native/php-fpm.ini'];
 
-  } else if (config.mode === 'cgi') {
-    files = await phpcgi.getFiles();
+  } else if (mode === 'cgi') {
     delete files['native/php'];
     delete files['native/php-fpm'];
     delete files['native/php-fpm.ini'];
@@ -76,18 +100,46 @@ async function getBridgeFiles(config) {
   return files;
 }
 
+function getLauncherFiles(config) {
+  const mode = configuration.getMode(config);
+
+  switch (mode) {
+    case "server":
+      return launchers.getServerFiles();
+    case "fpm":
+      return launchers.getFpmFiles();
+    case "cli":
+      return launchers.getCliFiles();
+    case "cgi":
+      return launchers.getCgiFiles();
+    default:
+      throw new Error(`Invalid config.mode "${config.mode}" given. Supported modes are server|cgi|cli|fpm.`);
+  }
+}
+
+// ###########################
+// EXPORTS
+// ###########################
+
+exports.config = {
+  maxLambdaSize: '15mb',
+};
+
 exports.build = async ({
   files, entrypoint, workPath, config, meta,
 }) => {
   const includedFiles = await getIncludedFiles({ files, workPath, config, meta });
-  console.log('Included files:', Object.keys(includedFiles));
 
   const userFiles = rename(includedFiles, name => path.join('user', name));
-  const bridgeFiles = await getBridgeFiles(config);
+  const bridgeFiles = {
+    ...await getPhpFiles({ workPath, config }),
+    ...await getLauncherFiles(config),
+  };
 
-  console.log('User files:', Object.keys(userFiles));
-  console.log('Bridge files:', Object.keys(bridgeFiles));
-  console.log('Entrypoint:', entrypoint);
+  console.log('Included files: ', Object.keys(includedFiles));
+  console.log('User files: ', Object.keys(userFiles));
+  console.log('Bridge files: ', Object.keys(bridgeFiles));
+  console.log('Entrypoint: ', entrypoint);
 
   const lambda = await createLambda({
     files: { ...userFiles, ...bridgeFiles },
@@ -101,3 +153,4 @@ exports.build = async ({
   return { [entrypoint]: lambda };
 };
 
+exports.shouldServe = shouldServe;

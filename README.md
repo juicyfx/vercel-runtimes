@@ -20,12 +20,12 @@ Mainly for PHP with focus on latest versions and more proprietal configurations.
 
 **PHP versions**
 
-- PHP 5.6 ❌
-- PHP 7.1 ❌
-- PHP 7.2 ❌
+- PHP 7.2 ✅
 - PHP 7.3 ✅
-- PHP 7.4 🔜
+- PHP 7.4 ✅
 - PHP 8.0 🔥
+
+> PHP 5.5, 5.6, 7.0 or 7.1 are not supported.
 
 **Extensions**
 
@@ -37,22 +37,15 @@ bcmath, bz2, calendar, Core, ctype, curl, date, dom, exif, fileinfo, filter, ftp
 
 | Package | Stable | Canary | Description |
 |---------|--------|--------|-------------|
-| [`@juicyfx/php`](src/php)| `0.0.2` | `0.0.3-canary.7` | PHP builder based on PHP FPM. |
-
-**PHP bridges**
-
-| Package | Stable | Canary | Description |
-|---------|--------|--------|-------------|
-| [`@juicyfx/php-server`](src/php-cli) | `0.0.1` | `0.0.1-canary.3` | PHP Development Server launcher. |
-| [`@juicyfx/php-cgi`](src/php-fpm) | `0.0.1` | `0.0.1-canary.4` | PHP CGI launcher. |
-| [`@juicyfx/php-cli`](src/php-cli) |`0.0.1` | `0.0.1-canary.1` | PHP CLI launcher. |
-| [`@juicyfx/php-fpm`](src/php-fpm) | `0.0.3` | `0.0.3-canary.1` | PHP FPM launcher with Node.js FCGI client. |
+| [`@juicyfx/php`](src/php)| `0.0.6` | `@canary` | PHP builder based on PHP FPM. |
 
 **PHP libraries**
 
 | Package | Stable | Canary | Description |
 |---------|--------|--------|-------------|
-| [`@juicyfx/php-lib-73`](src/php-lib-73) | `0.0.3` | `0.0.3-canary.0` | PHP 7.3 binaries and shared libraries. |
+| [`@juicyfx/php-lib-72`](src/php-lib-71) | `0.0.4` | `@canary` | PHP 7.1 binaries and shared libraries. |
+| [`@juicyfx/php-lib-73`](src/php-lib-72) | `0.0.4` | `@canary` | PHP 7.2 binaries and shared libraries. |
+| [`@juicyfx/php-lib-74`](src/php-lib-74) | `0.0.4` | `@canary` | PHP 7.3 binaries and shared libraries. |
 
 **Speed**
 
@@ -89,13 +82,19 @@ There is prepared builder for your PHP lambdas `@juicyfx/php`.
       "src": "index.php", 
       "use": "@juicyfx/php",
       "config": {
-        "mode": "server"
+        "v": "7.3"
+        "mode": "server",
       }
     }
   ]
 }
 ```
 
+- `v` [optional]
+  - Set the PHP version.
+  - Type: string
+  - Default: 7.3
+  - Values: 7.2 | 7.3 | 7.4
 - `mode` [optional]
   - Set the PHP launcher (bridge). 
   - Type: string
@@ -104,7 +103,6 @@ There is prepared builder for your PHP lambdas `@juicyfx/php`.
 
 ### 🚀 Roadmap
 
-- Support more PHP versions 7.1, 7.2, 7.4, 8.0
 - Support more PHP extensions
 - Resolve known issues (**HELP WANTED**)
 
@@ -158,6 +156,7 @@ There is prepared builder for your PHP lambdas `@juicyfx/php`.
 - https://github.com/ArtisanHost/php-cgi-lambda-build-script
 - https://github.com/stechstudio/php-lambda
 - https://github.com/araines/serverless-php
+- https://read.acloud.guru/serverless-php-630bb3e950f5
 
 ## 📝 License
 

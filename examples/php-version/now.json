@@ -1,0 +1,16 @@
+{
+    "version": 2,
+    "name": "now-builders-php-version",
+    "scope": "juicyfx",
+    "regions": ["all"],
+    "public": true,
+    "builds": [
+      { "src": "index.php", "use": "@juicyfx/php@canary"},
+      { "src": "php72.php", "use": "@juicyfx/php@canary", "config": { "v": "7.2" }},
+      { "src": "php73.php", "use": "@juicyfx/php@canary", "config": { "v": "7.3" }},
+      { "src": "php74.php", "use": "@juicyfx/php@canary", "config": { "v": "7.4" }}
+    ],
+    "env": {
+      "REV": "1"
+    }
+}

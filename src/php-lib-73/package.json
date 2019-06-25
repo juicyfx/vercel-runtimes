@@ -1,8 +1,0 @@
-{
-  "name": "@juicyfx/php-lib-73",
-  "version": "0.0.3",
-  "license": "MIT",
-  "devDependencies": {
-    "@now/build-utils": "^0.6.0"
-  }
-}
