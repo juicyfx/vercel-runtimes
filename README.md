@@ -13,9 +13,10 @@ Mainly for PHP with focus on latest versions and more proprietal configurations.
 
 **PHP**
 
-- CGI ✅🚧
-- CLI ✅
-- FPM ✅🚧🚧
+- Server ✅🚧🚧
+- CGI ✅🚧🚧
+- CLI ✅🚧
+- FPM ✅🚧🚧🚧
 
 **PHP versions**
 
@@ -36,27 +37,29 @@ bcmath, bz2, calendar, Core, ctype, curl, date, dom, exif, fileinfo, filter, ftp
 
 | Package | Stable | Canary | Description |
 |---------|--------|--------|-------------|
-| [`@juicyfx/php`](src/php)| `0.0.2` | `0.0.3-canary.5` | PHP builder based on PHP FPM. |
+| [`@juicyfx/php`](src/php)| `0.0.2` | `0.0.3-canary.7` | PHP builder based on PHP FPM. |
 
 **PHP bridges**
 
 | Package | Stable | Canary | Description |
 |---------|--------|--------|-------------|
-| [`@juicyfx/php-fpm`](src/php-fpm) | `0.0.2` | `0.0.3-canary.1` | PHP FPM launcher with Node.js FCGI client. |
-| [`@juicyfx/php-cgi`](src/php-fpm) | ❌ | `0.0.1-canary.4` | PHP CGI launcher. |
-| [`@juicyfx/php-cli`](src/php-cli) | ❌ | `0.0.1-canary.1` | PHP CLI launcher. |
+| [`@juicyfx/php-server`](src/php-cli) | `0.0.1` | `0.0.1-canary.3` | PHP Development Server launcher. |
+| [`@juicyfx/php-cgi`](src/php-fpm) | `0.0.1` | `0.0.1-canary.4` | PHP CGI launcher. |
+| [`@juicyfx/php-cli`](src/php-cli) |`0.0.1` | `0.0.1-canary.1` | PHP CLI launcher. |
+| [`@juicyfx/php-fpm`](src/php-fpm) | `0.0.3` | `0.0.3-canary.1` | PHP FPM launcher with Node.js FCGI client. |
 
 **PHP libraries**
 
 | Package | Stable | Canary | Description |
 |---------|--------|--------|-------------|
-| [`@juicyfx/php-lib-73`](src/php-lib-73) | `0.0.2` | `0.0.3-canary.0` | PHP 7.3 binaries and shared libraries. |
+| [`@juicyfx/php-lib-73`](src/php-lib-73) | `0.0.3` | `0.0.3-canary.0` | PHP 7.3 binaries and shared libraries. |
 
 **Speed**
 
+- Server - ~6ms 🏎
 - CGI - ~28ms
-- FPM - ~270ms 😢
 - CLI - ~24ms
+- FPM - ~270ms 😢
 
 ### ⚙️ Usage
 
@@ -71,7 +74,6 @@ There is prepared builder for your PHP lambdas `@juicyfx/php`.
     { 
       "src": "index.php", 
       "use": "@juicyfx/php",
-      "config": {...}
     }
   ]
 }
@@ -79,10 +81,26 @@ There is prepared builder for your PHP lambdas `@juicyfx/php`.
 
 **Config**
 
+```
+{
+  "version": 2,
+  "builds": [
+    { 
+      "src": "index.php", 
+      "use": "@juicyfx/php",
+      "config": {
+        "mode": "server"
+      }
+    }
+  ]
+}
+```
+
 - `mode` [optional]
   - Set the PHP launcher (bridge). 
   - Type: string
-  - Default: cgi
+  - Default: server
+  - Values: server | cgi | cli | fpm
 
 ### 🚀 Roadmap
 
@@ -107,9 +125,17 @@ There is prepared builder for your PHP lambdas `@juicyfx/php`.
 
 ### 👀 Examples
 
+**Server**
+
+- phpinfo - https://now-builders-php-server-f3l1x.juicyfx1.now.sh/
+
 **CGI**
 
 - phpinfo - https://now-builders-php-cgi-f3l1x.juicyfx1.now.sh/
+
+**CLI**
+
+- phpinfo - https://now-builders-php-cli-f3l1x.juicyfx1.now.sh/
 
 **FPM**
 
@@ -118,10 +144,6 @@ There is prepared builder for your PHP lambdas `@juicyfx/php`.
 - dumps - https://now-builders-php-fpm-f3l1x.juicyfx1.now.sh/dump.php
 - Tracy Debugger - https://now-builders-php-fpm-f3l1x.juicyfx1.now.sh/tracy.php
 - Nette Checker - https://now-builders-php-fpm-f3l1x.juicyfx1.now.sh/checker.php
-
-**CLI**
-
-- phpinfo - https://now-builders-php-cli-f3l1x.juicyfx1.now.sh/
 
 
 ![](docs/phpinfo.png)

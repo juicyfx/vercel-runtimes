@@ -2,12 +2,12 @@
     "version": 2,
     "name": "now-builders-php-cgi",
     "scope": "juicyfx",
-    "regions": ["bru1"],
+    "regions": ["all"],
     "public": true,
     "builds": [
-      { "src": "*.php", "use": "@juicyfx/php@0.0.3-canary.5"}
+      { "src": "*.php", "use": "@juicyfx/php@0.0.3-1", "config": { "mode": "cgi" }}
     ],
     "env": {
-      "REV": "2"
+      "REV": "1"
     }
   }

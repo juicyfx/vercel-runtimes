@@ -1,10 +1,11 @@
 {
   "name": "@juicyfx/php",
-  "version": "0.0.3-canary.5",
+  "version": "0.0.3-1",
   "license": "MIT",
   "dependencies": {
-    "@juicyfx/php-fpm": "^0.0.3-canary.0",
-    "@juicyfx/php-cli": "^0.0.1-canary.1",
-    "@juicyfx/php-cgi": "^0.0.1-canary.0"
+    "@juicyfx/php-fpm": "^0.0.3",
+    "@juicyfx/php-cli": "^0.0.1",
+    "@juicyfx/php-cgi": "^0.0.1",
+    "@juicyfx/php-server": "^0.0.1"
   }
 }

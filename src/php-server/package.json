@@ -1,5 +1,5 @@
 {
-  "name": "@juicyfx/php-cli",
+  "name": "@juicyfx/php-server",
   "version": "0.0.1",
   "license": "MIT",
   "dependencies": {

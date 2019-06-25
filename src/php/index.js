@@ -10,6 +10,7 @@ const path = require('path');
 const phpfpm = require('@juicyfx/php-fpm');
 const phpcgi = require('@juicyfx/php-cgi');
 const phpcli = require('@juicyfx/php-cli');
+const phpserver = require('@juicyfx/php-server');
 
 exports.config = {
   maxLambdaSize: '20mb',
@@ -45,9 +46,9 @@ async function getIncludedFiles({ files, workPath, config, meta }) {
 async function getBridgeFiles(config) {
   let files;
 
-  if (!config || !config.mode || config.mode === 'cgi') {
-    files = await phpcgi.getFiles();
-    delete files['native/php'];
+  if (!config || !config.mode || config.mode === 'server') {
+    files = await phpserver.getFiles();
+    delete files['native/php-cgi'];
     delete files['native/php-fpm'];
     delete files['native/php-fpm.ini'];
 
@@ -62,8 +63,14 @@ async function getBridgeFiles(config) {
     delete files['native/php-fpm'];
     delete files['native/php-fpm.ini'];
 
+  } else if (config.mode === 'cgi') {
+    files = await phpcgi.getFiles();
+    delete files['native/php'];
+    delete files['native/php-fpm'];
+    delete files['native/php-fpm.ini'];
+
   } else {
-    throw new Error(`Invalid config.mode given ${config.mode}. Supported are cgi|fpm|cli.`);
+    throw new Error(`Invalid config.mode "${config.mode}" given. Supported modes are server|cgi|cli|fpm.`);
   }
 
   return files;
