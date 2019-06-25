@@ -72,6 +72,8 @@ There is prepared builder for your PHP lambdas `@juicyfx/php`.
 }
 ```
 
+> 🚧Everything is HOT right now, so you should rather test the `@juicyfx/php@canary` version. 
+
 **Config**
 
 ```
