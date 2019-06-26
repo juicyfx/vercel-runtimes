@@ -11,6 +11,6 @@
       { "src": "php74.php", "use": "@juicyfx/php@canary", "config": { "v": "7.4" }}
     ],
     "env": {
-      "REV": "1"
+      "REV": "2"
     }
 }

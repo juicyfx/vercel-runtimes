@@ -115,11 +115,13 @@ async function query({ filename, stdin }) {
   }
 
   return new Promise((resolve, reject) => {
+    const keepAliveAgent = new http.Agent({ keepAlive: true });
     const options = {
       hostname: '127.0.0.1',
       port: 8000,
       path: `/${filename}`,
       method: 'GET',
+      agent: keepAliveAgent,
     };
 
     const req = http.request(options, (res) => {
