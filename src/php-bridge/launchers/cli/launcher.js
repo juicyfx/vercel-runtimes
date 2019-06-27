@@ -1,5 +1,6 @@
 const { spawn } = require('child_process');
 const { parse } = require('url');
+const { join: pathJoin } = require('path');
 
 function normalizeEvent(event) {
   if (event.Action === 'Invoke') {
@@ -46,13 +47,16 @@ async function transformFromAwsRequest({
 }) {
   const { pathname, search } = parse(path);
 
-  const filename = process.env.NOW_ENTRYPOINT || pathname;
+  const filename = pathJoin(
+    '/var/task/user',
+    process.env.NOW_ENTRYPOINT || pathname,
+  );
   const uri = pathname + (search || '');
 
   return { filename, uri, method, headers, body };
 }
 
-function query({ filename, stdin }) {
+function query({ filename, body }) {
   console.log(`Spawning: php ${filename}`);
 
   return new Promise((resolve) => {
@@ -83,7 +87,7 @@ function query({ filename, stdin }) {
     // PHP script execution end
     php.on('close', function (code) {
       if (code !== 0) {
-        resolve(`PHP process error code ${code}: ${response}`);
+        resolve(`PHP process closed with code ${code}: ${response}`);
       } else {
         resolve(response);
       }
@@ -96,19 +100,25 @@ function query({ filename, stdin }) {
 
     php.on('exit', function (code, signal) {
       if (code !== 0) {
-        resolve(`PHP process error code ${code} and signal ${signal}: ${response}`);
+        resolve(`PHP process exited with code ${code} and signal ${signal}: ${response}`);
       } else {
         resolve(response);
       }
     });
+
+    // Writes the body into the PHP stdin
+    {
+      php.stdin.setEncoding('utf-8');
+      php.stdin.write(body || '');
+      php.stdin.end();
+    }
   })
 }
 
 function transformToAwsResponse(body) {
   return {
     statusCode: 200,
-    body: Buffer.from(body).toString('base64'),
-    encoding: 'base64',
+    body
   };
 }
 
