@@ -37,7 +37,9 @@ bcmath, bz2, calendar, Core, ctype, curl, date, dom, exif, fileinfo, filter, ftp
 
 | Package | Stable | Canary | Description |
 |---------|--------|--------|-------------|
-| [`@juicyfx/php`](src/php)| `0.0.6` | `@canary` | PHP builder based on PHP FPM. |
+| [`@juicyfx/php`](src/php)| `0.0.6` | `@canary` | Final PHP builder. |
+| [`@juicyfx/php-bref`](src/php-bref)| `0.0.1` | `@canary` | Final PHP builder with Bref.sh. |
+| [`@juicyfx/php-bridge`](src/php-bridge)| `0.0.2` | `@canary` | PHP builder bridge with DevServer, FPM, CGI and CLI. |
 
 **PHP libraries**
 
@@ -49,7 +51,7 @@ bcmath, bz2, calendar, Core, ctype, curl, date, dom, exif, fileinfo, filter, ftp
 
 **Speed**
 
-- Server - ~6ms 🏎
+- Server - ~5ms 🏎
 - CGI - ~28ms
 - CLI - ~24ms
 - FPM - ~270ms 😢
