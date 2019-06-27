@@ -1,7 +1,5 @@
-const fs = require('fs');
 const { spawn } = require('child_process');
-const { join: pathJoin } = require('path');
-const { parse: parseUrl } = require('url');
+const { parse } = require('url');
 
 function normalizeEvent(event) {
   if (event.Action === 'Invoke') {
@@ -43,42 +41,15 @@ function normalizeEvent(event) {
   };
 }
 
-function isDirectory(p) {
-  return new Promise((resolve) => {
-    fs.stat(p, (error, s) => {
-      if (error) {
-        resolve(false);
-        return;
-      }
-
-      if (s.isDirectory()) {
-        resolve(true);
-        return;
-      }
-
-      resolve(false);
-    });
-  });
-}
-
 async function transformFromAwsRequest({
   method, path, headers, body,
 }) {
-  const { pathname, search } = parseUrl(path);
+  const { pathname, search } = parse(path);
 
-  let filename = pathJoin(
-    '/var/task/user',
-    process.env.NOW_ENTRYPOINT || pathname,
-  );
-  if (await isDirectory(filename)) {
-    if (!filename.endsWith('/')) {
-      filename += '/';
-      requestUri = pathname + '/' + (search || '');
-    }
-    filename += 'index.php';
-  }
+  const filename = process.env.NOW_ENTRYPOINT || pathname;
+  const uri = pathname + (search || '');
 
-  return { filename, stdin: body };
+  return { filename, uri, method, headers, body };
 }
 
 function query({ filename, stdin }) {

@@ -1,7 +1,6 @@
-const fs = require('fs');
 const http = require('http');
 const { spawn } = require('child_process');
-const { parse: parseUrl } = require('url');
+const { parse } = require('url');
 const { whenPortOpens } = require('./port.js');
 
 let connection;
@@ -46,39 +45,15 @@ function normalizeEvent(event) {
   };
 }
 
-function isDirectory(p) {
-  return new Promise((resolve) => {
-    fs.stat(p, (error, s) => {
-      if (error) {
-        resolve(false);
-        return;
-      }
-
-      if (s.isDirectory()) {
-        resolve(true);
-        return;
-      }
-
-      resolve(false);
-    });
-  });
-}
-
 async function transformFromAwsRequest({
   method, path, headers, body,
 }) {
-  const { pathname, search } = parseUrl(path);
+  const { pathname, search } = parse(path);
 
-  let filename = process.env.NOW_ENTRYPOINT || pathname;
-  if (await isDirectory(filename)) {
-    if (!filename.endsWith('/')) {
-      filename += '/';
-      requestUri = pathname + '/' + (search || '');
-    }
-    filename += 'index.php';
-  }
+  const filename = process.env.NOW_ENTRYPOINT || pathname;
+  const uri = pathname + (search || '');
 
-  return { filename, stdin: body };
+  return { filename, uri, method, headers, body };
 }
 
 async function startServer() {
@@ -106,22 +81,26 @@ async function startServer() {
 
   await whenPortOpens(8000, 400);
 
-  connection = true;
+  process.on('exit', () => {
+    devserver.kill();
+    devserver = null;
+  })
+
+  connection = devserver;
 }
 
-async function query({ filename, stdin }) {
+async function query({ filename, uri, headers, method, body }) {
   if (!connection) {
     await startServer();
   }
 
-  return new Promise((resolve, reject) => {
-    const keepAliveAgent = new http.Agent({ keepAlive: true });
+  return new Promise(resolve => {
     const options = {
       hostname: '127.0.0.1',
       port: 8000,
-      path: `/${filename}`,
-      method: 'GET',
-      agent: keepAliveAgent,
+      path: `${uri}`,
+      method,
+      headers,
     };
 
     const req = http.request(options, (res) => {
@@ -131,24 +110,36 @@ async function query({ filename, stdin }) {
         data += d;
       });
       res.on('end', () => {
-        resolve(data);
+        resolve({
+          body: data,
+          headers: res.headers,
+          statusCode: res.statusCode
+        });
       });
     });
 
     req.on('error', (error) => {
       console.error('HTTP errored', error);
-      reject('HTTP error');
+      resolve({
+        body: 'HTTP error',
+        headers: {},
+        statusCode: 500
+      });
     });
+
+    if (body) {
+      req.write(body);
+    }
 
     req.end();
   });
 }
 
-function transformToAwsResponse(body) {
+function transformToAwsResponse({ body, headers, statusCode }) {
   return {
-    statusCode: 200,
-    body: Buffer.from(body).toString('base64'),
-    encoding: 'base64',
+    statusCode,
+    headers,
+    body
   };
 }
 
