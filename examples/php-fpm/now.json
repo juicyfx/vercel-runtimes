@@ -5,7 +5,7 @@
     "regions": ["all"],
     "public": true,
     "builds": [
-      { "src": "*.php", "use": "@juicyfx/php@0.0.3", "config": {"mode": "fpm"} }
+      { "src": "*.php", "use": "@juicyfx/php@canary", "config": {"mode": "fpm"} }
     ],
     "env": {
       "REV": "1"

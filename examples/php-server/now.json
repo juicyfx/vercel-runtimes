@@ -8,6 +8,6 @@
       { "src": "*.php", "use": "@juicyfx/php@canary", "config": { "mode": "server", "v": "7.3" }}
     ],
     "env": {
-      "REV": "1"
+      "REV": "8"
     }
 }
