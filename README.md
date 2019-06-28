@@ -38,8 +38,8 @@ bcmath, bz2, calendar, Core, ctype, curl, date, dom, exif, fileinfo, filter, ftp
 | Package | Stable | Canary | Description |
 |---------|--------|--------|-------------|
 | [`@juicyfx/php`](src/php)| `0.0.6` | `@canary` | Final PHP builder. |
-| [`@juicyfx/php-bref`](src/php-bref)| `0.0.1` | `@canary` | Final PHP builder with Bref.sh. |
 | [`@juicyfx/php-bridge`](src/php-bridge)| `0.0.2` | `@canary` | PHP builder bridge with DevServer, FPM, CGI and CLI. |
+| [`@juicyfx/php-bref`](src/php-bref)| `0.0.1` | `@canary` | Final PHP builder with Bref.sh. |
 
 **PHP libraries**
 

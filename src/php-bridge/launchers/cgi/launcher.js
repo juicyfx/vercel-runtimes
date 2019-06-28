@@ -1,14 +1,13 @@
-const fs = require('fs');
 const { spawn } = require('child_process');
-const { join: pathJoin } = require('path');
 const { parse: parseUrl } = require('url');
+const { join: pathJoin } = require('path');
 
 function normalizeEvent(event) {
   if (event.Action === 'Invoke') {
     const invokeEvent = JSON.parse(event.body);
 
     const {
-      method, path, headers, encoding,
+      method, path, host, headers, encoding,
     } = invokeEvent;
 
     let { body } = invokeEvent;
@@ -26,75 +25,149 @@ function normalizeEvent(event) {
     return {
       method,
       path,
+      host,
       headers,
       body,
     };
   }
 
   const {
-    httpMethod: method, path, headers, body,
+    httpMethod: method, path, host, headers, body,
   } = event;
 
   return {
     method,
     path,
+    host,
     headers,
     body,
   };
 }
 
-function isDirectory(p) {
-  return new Promise((resolve) => {
-    fs.stat(p, (error, s) => {
-      if (error) {
-        resolve(false);
-        return;
-      }
-
-      if (s.isDirectory()) {
-        resolve(true);
-        return;
-      }
-
-      resolve(false);
-    });
-  });
-}
-
 async function transformFromAwsRequest({
-  method, path, headers, body,
+  method, path, host, headers, body,
 }) {
-  const { pathname, search } = parseUrl(path);
+  const { pathname } = parseUrl(path);
 
-  let filename = pathJoin(
+  const filename = pathJoin(
     '/var/task/user',
     process.env.NOW_ENTRYPOINT || pathname,
   );
-  if (await isDirectory(filename)) {
-    if (!filename.endsWith('/')) {
-      filename += '/';
-      requestUri = pathname + '/' + (search || '');
-    }
-    filename += 'index.php';
-  }
 
-  return { filename, stdin: body };
+  return { filename, path, host, method, headers, body };
 }
 
-function query({ filename, stdin }) {
+function createCGIReq({ filename, path, host, method, headers }) {
+  const { search } = parseUrl(path);
+
+  const env = {
+    SERVER_ROOT: '/var/task/native',
+    DOCUMENT_ROOT: '/var/task/native',
+    SERVER_NAME: host,
+    SERVER_PORT: 443,
+    HTTPS: "On",
+    REDIRECT_STATUS: 200,
+    SCRIPT_NAME: filename,
+    REQUEST_URI: host + path,
+    SCRIPT_FILENAME: filename,
+    PATH_TRANSLATED: filename,
+    REQUEST_METHOD: method,
+    QUERY_STRING: search || '',
+    GATEWAY_INTERFACE: "CGI/1.1",
+    SERVER_PROTOCOL: "HTTP/1.1",
+    PATH: process.env.PATH,
+    SERVER_SOFTWARE: "ZEIT Now PHP"
+  };
+
+  if (headers["content-length"]) {
+    env.CONTENT_LENGTH = headers["content-length"];
+  }
+
+  if (headers["content-type"]) {
+    env.CONTENT_TYPE = headers["content-type"];
+  }
+
+  if (headers["x-real-ip"]) {
+    env.REMOTE_ADDR = headers["x-real-ip"];
+  }
+
+  // expose request headers
+  Object.keys(headers).forEach(function (header) {
+    var name = "HTTP_" + header.toUpperCase().replace(/-/g, "_");
+    env[name] = headers[header];
+  });
+
+  return {
+    env
+  }
+}
+
+function parseCGIResponse(response) {
+  const headersPos = response.indexOf("\r\n\r\n");
+  if (headersPos === -1) {
+    return {
+      headers: {},
+      body: response,
+      statusCode: 200
+    }
+  }
+
+  let statusCode = 200;
+  const rawHeaders = response.substr(0, headersPos);
+  const rawBody = response.substr(headersPos);
+  
+  const headers = parseCGIHeaders(rawHeaders);
+  
+  if (headers['status']) {
+    statusCode = parseInt(headers['status']) || 200;
+  }
+
+  return {
+    headers,
+    body: rawBody,
+    statusCode
+  }
+}
+
+function parseCGIHeaders(headers) {
+  if (!headers) return {}
+
+  const result = {}
+
+  for (header of headers.split("\n")) {
+    const index = header.indexOf(':');
+    const key = header.slice(0, index).trim().toLowerCase();
+    const value = header.slice(index + 1).trim();
+
+    if (typeof (result[key]) === 'undefined') {
+      result[key] = value
+    } else if (isArray(result[key])) {
+      result[key].push(value)
+    } else {
+      result[key] = [result[key], value]
+    }
+  }
+
+  return result
+}
+
+function query({ filename, path, host, headers, method, body }) {
   console.log(`Spawning: php-cgi ${filename}`);
+
+  const cgiReq = createCGIReq({ filename, path, host, headers, method })
 
   return new Promise((resolve) => {
     var response = '';
 
     const php = spawn(
       './php-cgi',
-      ['-q', '-c', 'php.ini', filename],
+      ['-c', 'php.ini', filename],
       {
         stdio: ['pipe', 'pipe', 'pipe'],
         cwd: '/var/task/native',
         env: {
-          LD_LIBRARY_PATH: '/var/task/native/modules:' + (process.env.LD_LIBRARY_PATH || '')
+          LD_LIBRARY_PATH: '/var/task/native/modules:' + (process.env.LD_LIBRARY_PATH || ''),
+          ...cgiReq.env
         }
       },
     );
@@ -114,28 +187,38 @@ function query({ filename, stdin }) {
       if (code !== 0) {
         console.log(`PHP process closed code ${code} and signal ${signal}`);
       }
-      resolve(response);
+
+      const { headers, body, statusCode } = parseCGIResponse(response);
+
+      resolve({
+        body,
+        headers,
+        statusCode
+      });
     });
 
     php.on('error', function (err) {
-      resolve(`PHP process errored ${err}`);
-      return;
+      resolve({
+        body: `PHP process errored ${err}`,
+        headers: {},
+        statusCode: 500
+      });
     });
 
-    php.on('exit', function (code, signal) {
-      if (code !== 0) {
-        console.log(`PHP process exited code ${code} and signal ${signal}`);
-      }
-      resolve(response);
-    });
+    // Writes the body into the PHP stdin
+    {
+      php.stdin.setEncoding('utf-8');
+      php.stdin.write(body || '');
+      php.stdin.end();
+    }
   })
 }
 
-function transformToAwsResponse(body) {
+function transformToAwsResponse({ statusCode, headers, body }) {
   return {
-    statusCode: 200,
-    body: Buffer.from(body).toString('base64'),
-    encoding: 'base64',
+    statusCode,
+    headers,
+    body
   };
 }
 

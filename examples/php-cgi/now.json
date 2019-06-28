@@ -8,6 +8,6 @@
       { "src": "*.php", "use": "@juicyfx/php@canary", "config": { "mode": "cgi" }}
     ],
     "env": {
-      "REV": "1"
+      "REV": "8"
     }
   }
