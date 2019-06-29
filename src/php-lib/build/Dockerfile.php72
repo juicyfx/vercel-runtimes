@@ -1,5 +1,7 @@
 FROM amazonlinux:2.0.20190508
 
+ENV PHP=php72
+
 RUN yum install -y \
         https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm \
         https://rpms.remirepo.net/enterprise/remi-release-7.rpm \
@@ -12,65 +14,75 @@ RUN yum install -y \
 RUN yum install -y patchelf
 
 RUN yum install -y \
-        php72-php-bcmath \
-        php72-php-cli \
-        php72-php-cgi \
-        php72-php-fpm \
-        php72-php-gd \
-        php72-php-imap \
-        php72-php-intl \
-        php72-php-json \
-        php72-php-mbstring \
-        php72-php-mysqli \
-        php72-php-mysqlnd \
-        php72-php-opcache \
-        php72-php-pdo \
-        php72-php-pgsql \
-        php72-php-soap \
-        php72-php-sodium \
-        php72-php-tokenizer \
-        php72-php-xml \
-        php72-php-xmlrpc
+        ${PHP}-php-apcu \
+        ${PHP}-php-bcmath \
+        ${PHP}-php-cli \
+        ${PHP}-php-cgi \
+        ${PHP}-php-ds \
+        ${PHP}-php-fpm \
+        ${PHP}-php-gd \
+        ${PHP}-php-imap \
+        ${PHP}-php-intl \
+        ${PHP}-php-json \
+        ${PHP}-php-mbstring \
+        ${PHP}-php-mysqli \
+        ${PHP}-php-mysqlnd \
+        ${PHP}-php-opcache \
+        ${PHP}-php-pdo \
+        ${PHP}-php-phalcon \
+        ${PHP}-php-pgsql \
+        ${PHP}-php-ssh2 \
+        ${PHP}-php-soap \
+        ${PHP}-php-sodium \
+        ${PHP}-php-swoole \
+        ${PHP}-php-tokenizer \
+        ${PHP}-php-xml \
+        ${PHP}-php-xmlrpc
 
 # $ORIGIN refers to the current directory, don't evaluate it, use the single quotes
-RUN patchelf --set-rpath '$ORIGIN' /usr/bin/php72
-RUN patchelf --set-rpath '$ORIGIN' /usr/bin/php72-cgi
-RUN patchelf --set-rpath '$ORIGIN' /opt/remi/php72/root/usr/sbin/php-fpm
-RUN patchelf --set-rpath '$ORIGIN' /opt/remi/php72/root/usr/lib64/php/modules/bcmath.so
-RUN patchelf --set-rpath '$ORIGIN' /opt/remi/php72/root/usr/lib64/php/modules/bz2.so
-RUN patchelf --set-rpath '$ORIGIN' /opt/remi/php72/root/usr/lib64/php/modules/calendar.so
-RUN patchelf --set-rpath '$ORIGIN' /opt/remi/php72/root/usr/lib64/php/modules/ctype.so
-RUN patchelf --set-rpath '$ORIGIN' /opt/remi/php72/root/usr/lib64/php/modules/curl.so
-RUN patchelf --set-rpath '$ORIGIN' /opt/remi/php72/root/usr/lib64/php/modules/dom.so
-RUN patchelf --set-rpath '$ORIGIN' /opt/remi/php72/root/usr/lib64/php/modules/exif.so
-RUN patchelf --set-rpath '$ORIGIN' /opt/remi/php72/root/usr/lib64/php/modules/fileinfo.so
-RUN patchelf --set-rpath '$ORIGIN' /opt/remi/php72/root/usr/lib64/php/modules/ftp.so
-RUN patchelf --set-rpath '$ORIGIN' /opt/remi/php72/root/usr/lib64/php/modules/gd.so
-RUN patchelf --set-rpath '$ORIGIN' /opt/remi/php72/root/usr/lib64/php/modules/gettext.so
-RUN patchelf --set-rpath '$ORIGIN' /opt/remi/php72/root/usr/lib64/php/modules/iconv.so
-RUN patchelf --set-rpath '$ORIGIN' /opt/remi/php72/root/usr/lib64/php/modules/imap.so
-RUN patchelf --set-rpath '$ORIGIN' /opt/remi/php72/root/usr/lib64/php/modules/intl.so
-RUN patchelf --set-rpath '$ORIGIN' /opt/remi/php72/root/usr/lib64/php/modules/json.so
-RUN patchelf --set-rpath '$ORIGIN' /opt/remi/php72/root/usr/lib64/php/modules/mbstring.so
-RUN patchelf --set-rpath '$ORIGIN' /opt/remi/php72/root/usr/lib64/php/modules/mysqli.so
-RUN patchelf --set-rpath '$ORIGIN' /opt/remi/php72/root/usr/lib64/php/modules/mysqlnd.so
-RUN patchelf --set-rpath '$ORIGIN' /opt/remi/php72/root/usr/lib64/php/modules/pdo.so
-RUN patchelf --set-rpath '$ORIGIN' /opt/remi/php72/root/usr/lib64/php/modules/pdo_mysql.so
-RUN patchelf --set-rpath '$ORIGIN' /opt/remi/php72/root/usr/lib64/php/modules/pdo_pgsql.so
-RUN patchelf --set-rpath '$ORIGIN' /opt/remi/php72/root/usr/lib64/php/modules/pdo_sqlite.so
-RUN patchelf --set-rpath '$ORIGIN' /opt/remi/php72/root/usr/lib64/php/modules/pgsql.so
-RUN patchelf --set-rpath '$ORIGIN' /opt/remi/php72/root/usr/lib64/php/modules/phar.so
-RUN patchelf --set-rpath '$ORIGIN' /opt/remi/php72/root/usr/lib64/php/modules/simplexml.so
-RUN patchelf --set-rpath '$ORIGIN' /opt/remi/php72/root/usr/lib64/php/modules/soap.so
-RUN patchelf --set-rpath '$ORIGIN' /opt/remi/php72/root/usr/lib64/php/modules/sockets.so
-RUN patchelf --set-rpath '$ORIGIN' /opt/remi/php72/root/usr/lib64/php/modules/sodium.so
-RUN patchelf --set-rpath '$ORIGIN' /opt/remi/php72/root/usr/lib64/php/modules/sqlite3.so
-RUN patchelf --set-rpath '$ORIGIN' /opt/remi/php72/root/usr/lib64/php/modules/tokenizer.so
-RUN patchelf --set-rpath '$ORIGIN' /opt/remi/php72/root/usr/lib64/php/modules/xml.so
-RUN patchelf --set-rpath '$ORIGIN' /opt/remi/php72/root/usr/lib64/php/modules/xmlreader.so
-RUN patchelf --set-rpath '$ORIGIN' /opt/remi/php72/root/usr/lib64/php/modules/xmlrpc.so
-RUN patchelf --set-rpath '$ORIGIN' /opt/remi/php72/root/usr/lib64/php/modules/xmlwriter.so
-RUN patchelf --set-rpath '$ORIGIN' /opt/remi/php72/root/usr/lib64/php/modules/xsl.so
+RUN patchelf --set-rpath '$ORIGIN' /usr/bin/${PHP}
+RUN patchelf --set-rpath '$ORIGIN' /usr/bin/${PHP}-cgi
+RUN patchelf --set-rpath '$ORIGIN' /opt/remi/${PHP}/root/usr/sbin/php-fpm
+RUN patchelf --set-rpath '$ORIGIN' /opt/remi/${PHP}/root/usr/lib64/php/modules/apcu.so
+RUN patchelf --set-rpath '$ORIGIN' /opt/remi/${PHP}/root/usr/lib64/php/modules/bcmath.so
+RUN patchelf --set-rpath '$ORIGIN' /opt/remi/${PHP}/root/usr/lib64/php/modules/bz2.so
+RUN patchelf --set-rpath '$ORIGIN' /opt/remi/${PHP}/root/usr/lib64/php/modules/calendar.so
+RUN patchelf --set-rpath '$ORIGIN' /opt/remi/${PHP}/root/usr/lib64/php/modules/ctype.so
+RUN patchelf --set-rpath '$ORIGIN' /opt/remi/${PHP}/root/usr/lib64/php/modules/curl.so
+RUN patchelf --set-rpath '$ORIGIN' /opt/remi/${PHP}/root/usr/lib64/php/modules/dom.so
+RUN patchelf --set-rpath '$ORIGIN' /opt/remi/${PHP}/root/usr/lib64/php/modules/ds.so
+RUN patchelf --set-rpath '$ORIGIN' /opt/remi/${PHP}/root/usr/lib64/php/modules/exif.so
+RUN patchelf --set-rpath '$ORIGIN' /opt/remi/${PHP}/root/usr/lib64/php/modules/fileinfo.so
+RUN patchelf --set-rpath '$ORIGIN' /opt/remi/${PHP}/root/usr/lib64/php/modules/ftp.so
+RUN patchelf --set-rpath '$ORIGIN' /opt/remi/${PHP}/root/usr/lib64/php/modules/gd.so
+RUN patchelf --set-rpath '$ORIGIN' /opt/remi/${PHP}/root/usr/lib64/php/modules/gettext.so
+RUN patchelf --set-rpath '$ORIGIN' /opt/remi/${PHP}/root/usr/lib64/php/modules/iconv.so
+RUN patchelf --set-rpath '$ORIGIN' /opt/remi/${PHP}/root/usr/lib64/php/modules/imap.so
+RUN patchelf --set-rpath '$ORIGIN' /opt/remi/${PHP}/root/usr/lib64/php/modules/intl.so
+RUN patchelf --set-rpath '$ORIGIN' /opt/remi/${PHP}/root/usr/lib64/php/modules/json.so
+RUN patchelf --set-rpath '$ORIGIN' /opt/remi/${PHP}/root/usr/lib64/php/modules/mbstring.so
+RUN patchelf --set-rpath '$ORIGIN' /opt/remi/${PHP}/root/usr/lib64/php/modules/mysqli.so
+RUN patchelf --set-rpath '$ORIGIN' /opt/remi/${PHP}/root/usr/lib64/php/modules/mysqlnd.so
+RUN patchelf --set-rpath '$ORIGIN' /opt/remi/${PHP}/root/usr/lib64/php/modules/pdo.so
+RUN patchelf --set-rpath '$ORIGIN' /opt/remi/${PHP}/root/usr/lib64/php/modules/pdo_mysql.so
+RUN patchelf --set-rpath '$ORIGIN' /opt/remi/${PHP}/root/usr/lib64/php/modules/pdo_pgsql.so
+RUN patchelf --set-rpath '$ORIGIN' /opt/remi/${PHP}/root/usr/lib64/php/modules/pdo_sqlite.so
+RUN patchelf --set-rpath '$ORIGIN' /opt/remi/${PHP}/root/usr/lib64/php/modules/pgsql.so
+RUN patchelf --set-rpath '$ORIGIN' /opt/remi/${PHP}/root/usr/lib64/php/modules/phalcon.so
+RUN patchelf --set-rpath '$ORIGIN' /opt/remi/${PHP}/root/usr/lib64/php/modules/phar.so
+RUN patchelf --set-rpath '$ORIGIN' /opt/remi/${PHP}/root/usr/lib64/php/modules/simplexml.so
+RUN patchelf --set-rpath '$ORIGIN' /opt/remi/${PHP}/root/usr/lib64/php/modules/soap.so
+RUN patchelf --set-rpath '$ORIGIN' /opt/remi/${PHP}/root/usr/lib64/php/modules/sockets.so
+RUN patchelf --set-rpath '$ORIGIN' /opt/remi/${PHP}/root/usr/lib64/php/modules/sodium.so
+RUN patchelf --set-rpath '$ORIGIN' /opt/remi/${PHP}/root/usr/lib64/php/modules/sqlite3.so
+RUN patchelf --set-rpath '$ORIGIN' /opt/remi/${PHP}/root/usr/lib64/php/modules/ssh2.so
+RUN patchelf --set-rpath '$ORIGIN' /opt/remi/${PHP}/root/usr/lib64/php/modules/swoole.so
+RUN patchelf --set-rpath '$ORIGIN' /opt/remi/${PHP}/root/usr/lib64/php/modules/tokenizer.so
+RUN patchelf --set-rpath '$ORIGIN' /opt/remi/${PHP}/root/usr/lib64/php/modules/xml.so
+RUN patchelf --set-rpath '$ORIGIN' /opt/remi/${PHP}/root/usr/lib64/php/modules/xmlreader.so
+RUN patchelf --set-rpath '$ORIGIN' /opt/remi/${PHP}/root/usr/lib64/php/modules/xmlrpc.so
+RUN patchelf --set-rpath '$ORIGIN' /opt/remi/${PHP}/root/usr/lib64/php/modules/xmlwriter.so
+RUN patchelf --set-rpath '$ORIGIN' /opt/remi/${PHP}/root/usr/lib64/php/modules/xsl.so
 
 WORKDIR /opt/now
 
