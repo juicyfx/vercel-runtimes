@@ -1,0 +1,13 @@
+{
+    "version": 2,
+    "name": "now-builders-php-caddy",
+    "scope": "juicyfx",
+    "regions": ["bru1"],
+    "public": true,
+    "builds": [
+      { "src": "*.php", "use": "@juicyfx/php-caddy@canary" }
+    ],
+    "env": {
+      "REV": "1"
+    }
+  }
