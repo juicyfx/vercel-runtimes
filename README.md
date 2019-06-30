@@ -13,10 +13,10 @@ Mainly for PHP with focus on latest versions and more proprietal configurations.
 
 **PHP**
 
-- Server ✅🚧🚧
-- CGI ✅🚧🚧
-- CLI ✅🚧
-- FPM ✅🚧🚧🚧
+- Server ✅🏎
+- CGI ✅
+- CLI ✅
+- FPM ✅🐥
 
 **PHP versions**
 
@@ -29,7 +29,9 @@ Mainly for PHP with focus on latest versions and more proprietal configurations.
 
 **Extensions**
 
-bcmath, bz2, calendar, Core, ctype, curl, date, dom, exif, fileinfo, filter, ftp, gettext, hash, iconv, json, libxml, mbstring, mysqli, mysqlnd, openssl, pcntl, pcre, PDO, pdo_mysql, pdo_pgsql, pdo_sqlite, Phar, readline, Reflection, session, SimpleXML, soap, sockets, sodium, SPL, sqlite3, standard, tokenizer, wddx, xml, xmlreader, xmlrpc, xmlwriter, xsl, Zend OPcache, zlib
+Preinstalled: apcu, bcmath, bz2, calendar, Core, ctype, curl, date, dom, ds, exif, fileinfo, filter, ftp, gettext, hash, iconv, json, libxml, mbstring, mysqli, mysqlnd, openssl, pcntl, pcre, PDO, pdo_mysql, pdo_pgsql, pdo_sqlite, phalcon, Phar, readline, Reflection, session, SimpleXML, soap, sockets, sodium, SPL, sqlite3, ssh2, standard, swoole, tokenizer, xml, xmlreader, xmlrpc, xmlwriter, xsl, Zend OPcache, zlib
+
+> List of all installable extensions is on this page https://blog.remirepo.net/pages/PECL-extensions-RPM-status.
 
 ### 📦 Packages
 
@@ -39,7 +41,8 @@ bcmath, bz2, calendar, Core, ctype, curl, date, dom, exif, fileinfo, filter, ftp
 |---------|--------|--------|-------------|
 | [`@juicyfx/php`](src/php)| `0.0.6` | `@canary` | Final PHP builder. |
 | [`@juicyfx/php-bridge`](src/php-bridge)| `0.0.2` | `@canary` | PHP builder bridge with DevServer, FPM, CGI and CLI. |
-| [`@juicyfx/php-bref`](src/php-bref)| `0.0.1` | `@canary` | Final PHP builder with Bref.sh. |
+| [`@juicyfx/php-bref`](src/php-bref)| `0.0.1` | `@canary` | Final PHP builder with Bref.sh. (Only with PHP 7.3) |
+| [`@juicyfx/php-caddy`](src/php-caddy)| `0.0.1` | `@canary` | Final PHP builder with Caddy server with FASTCGI. (Only with PHP 7.3) |
 
 **PHP libraries**
 
@@ -54,7 +57,7 @@ bcmath, bz2, calendar, Core, ctype, curl, date, dom, exif, fileinfo, filter, ftp
 - Server - ~5ms 🏎
 - CGI - ~28ms
 - CLI - ~24ms
-- FPM - ~270ms 😢
+- FPM - ~270ms 🐥
 
 ### ⚙️ Usage
 
@@ -130,23 +133,48 @@ There is prepared builder for your PHP lambdas `@juicyfx/php`.
 **Server**
 
 - phpinfo - https://now-builders-php-server-f3l1x.juicyfx1.now.sh/
+- hello - https://now-builders-php-server-f3l1x.juicyfx1.now.sh/hello.php
+- test - https://now-builders-php-server-f3l1x.juicyfx1.now.sh/test.php
 
 **CGI**
 
-- phpinfo - https://now-builders-php-cgi-f3l1x.juicyfx1.now.sh/
+- phpinfo - https://now-builders-php-cli-f3l1x.juicyfx1.now.sh/
+- hello - https://now-builders-php-cli-f3l1x.juicyfx1.now.sh/hello.php
+- test - https://now-builders-php-cli-f3l1x.juicyfx1.now.sh/test.php
 
 **CLI**
 
 - phpinfo - https://now-builders-php-cli-f3l1x.juicyfx1.now.sh/
+- hello - https://now-builders-php-cli-f3l1x.juicyfx1.now.sh/hello.php
+- test - https://now-builders-php-cli-f3l1x.juicyfx1.now.sh/test.php
 
 **FPM**
 
-- index - https://now-builders-php-fpm-f3l1x.juicyfx1.now.sh/
-- phpinfo - https://now-builders-php-fpm-f3l1x.juicyfx1.now.sh/phpinfo.php
-- dumps - https://now-builders-php-fpm-f3l1x.juicyfx1.now.sh/dump.php
-- Tracy Debugger - https://now-builders-php-fpm-f3l1x.juicyfx1.now.sh/tracy.php
-- Nette Checker - https://now-builders-php-fpm-f3l1x.juicyfx1.now.sh/checker.php
+- phpinfo - https://now-builders-php-fpm-f3l1x.juicyfx1.now.sh/
+- hello - https://now-builders-php-fpm-f3l1x.juicyfx1.now.sh/hello.php
+- test - https://now-builders-php-fpm-f3l1x.juicyfx1.now.sh/test.php
 
+**Extensions**
+
+- ds -  https://now-builders-php-ext-f3l1x.juicyfx1.now.sh/ds.php
+- phalcon -  https://now-builders-php-ext-f3l1x.juicyfx1.now.sh/phalcon.php
+
+**Versions**
+
+- PHP versions - https://now-builders-php-version-f3l1x.juicyfx1.now.sh/
+
+**Nette**
+
+- guide - https://now-builders-php-nette-f3l1x.juicyfx1.now.sh/
+- phpinfo - https://now-builders-php-nette-f3l1x.juicyfx1.now.sh/phpinfo.php
+- dump - https://now-builders-php-nette-f3l1x.juicyfx1.now.sh/debp.php
+- Tracy Debugger - https://now-builders-php-nette-f3l1x.juicyfx1.now.sh/tracy.php
+- Nette Checker - https://now-builders-php-nette-f3l1x.juicyfx1.now.sh/checker.php
+
+**Bref**
+
+- phpinfo - https://now-builders-php-bref-f3l1x.juicyfx1.now.sh/
+- Nette Framework - https://now-builders-php-bref-nette-f3l1x.juicyfx1.now.sh/
 
 ![](docs/phpinfo.png)
 
