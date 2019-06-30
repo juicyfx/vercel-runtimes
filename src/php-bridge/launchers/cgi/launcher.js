@@ -141,7 +141,7 @@ function parseCGIHeaders(headers) {
 
     if (typeof (result[key]) === 'undefined') {
       result[key] = value
-    } else if (isArray(result[key])) {
+    } else if (Array.isArray(result[key])) {
       result[key].push(value)
     } else {
       result[key] = [result[key], value]
