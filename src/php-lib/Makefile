@@ -153,6 +153,18 @@ __distribution:
 	docker exec ${DOCKER_CONTAINER} /bin/cat /usr/lib64/libcap-ng.so.0 > ${DIST_PATH}/modules/libcap-ng.so.0
 	docker exec ${DOCKER_CONTAINER} /bin/cat /usr/lib64/libicui18n.so.62 > ${DIST_PATH}/modules/libicui18n.so.62
 	docker exec ${DOCKER_CONTAINER} /bin/cat /usr/lib64/libcap-ng.so.0 > ${DIST_PATH}/modules/libcap-ng.so.0
+	docker exec ${DOCKER_CONTAINER} /bin/cat /usr/lib64/libX11.so.6 > ${DIST_PATH}/modules/libX11.so.6
+	docker exec ${DOCKER_CONTAINER} /bin/cat /usr/lib64/libXpm.so.4 > ${DIST_PATH}/modules/libXpm.so.4
+	docker exec ${DOCKER_CONTAINER} /bin/cat /usr/lib64/libpng15.so.15 > ${DIST_PATH}/modules/libpng15.so.15
+	docker exec ${DOCKER_CONTAINER} /bin/cat /usr/lib64/libjpeg.so.62 > ${DIST_PATH}/modules/libjpeg.so.62
+	docker exec ${DOCKER_CONTAINER} /bin/cat /usr/lib64/libfreetype.so.6 > ${DIST_PATH}/modules/libfreetype.so.6
+	docker exec ${DOCKER_CONTAINER} /bin/cat /usr/lib64/libfontconfig.so.1 > ${DIST_PATH}/modules/libfontconfig.so.1
+	docker exec ${DOCKER_CONTAINER} /bin/cat /usr/lib64/libtiff.so.5 > ${DIST_PATH}/modules/libtiff.so.5
+	docker exec ${DOCKER_CONTAINER} /bin/cat /usr/lib64/libwebp.so.7 > ${DIST_PATH}/modules/libwebp.so.7
+	docker exec ${DOCKER_CONTAINER} /bin/cat /usr/lib64/libicui18n.so.62 > ${DIST_PATH}/modules/libicui18n.so.62
+	docker exec ${DOCKER_CONTAINER} /bin/cat /usr/lib64/libicuuc.so.62 > ${DIST_PATH}/modules/libicuuc.so.62
+	docker exec ${DOCKER_CONTAINER} /bin/cat /usr/lib64/libicudata.so.62 > ${DIST_PATH}/modules/libicudata.so.62
+	docker exec ${DOCKER_CONTAINER} /bin/cat /usr/lib64/libicuio.so.62 > ${DIST_PATH}/modules/libicuio.so.62
 
 	# Remove temporary PHP container
 	docker rm --force ${DOCKER_CONTAINER} || true
@@ -200,5 +212,7 @@ test-runtime:
 		-v $(CURDIR)/v7.3/native:/opt/now/ \
 		-e LD_LIBRARY_PATH=/opt/now/modules:/var/lang/lib:/lib64:/usr/lib64:/var/runtime:/var/runtime/lib:/var/task:/var/task/lib:/opt/lib \
 		-w /opt/now \
+		-p 9000:9000 \
+		-p 2015:2015 \
 		--entrypoint /bin/bash \
 		lambci/lambda:nodejs10.x
