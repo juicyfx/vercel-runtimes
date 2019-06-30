@@ -165,6 +165,10 @@ __distribution:
 	docker exec ${DOCKER_CONTAINER} /bin/cat /usr/lib64/libicuuc.so.62 > ${DIST_PATH}/modules/libicuuc.so.62
 	docker exec ${DOCKER_CONTAINER} /bin/cat /usr/lib64/libicudata.so.62 > ${DIST_PATH}/modules/libicudata.so.62
 	docker exec ${DOCKER_CONTAINER} /bin/cat /usr/lib64/libicuio.so.62 > ${DIST_PATH}/modules/libicuio.so.62
+	docker exec ${DOCKER_CONTAINER} /bin/cat /usr/lib64/libxcb.so.1 > ${DIST_PATH}/modules/libxcb.so.1
+	docker exec ${DOCKER_CONTAINER} /bin/cat /usr/lib64/libexpat.so.1 > ${DIST_PATH}/modules/libexpat.so.1
+	docker exec ${DOCKER_CONTAINER} /bin/cat /usr/lib64/libjbig.so.2.0 > ${DIST_PATH}/modules/libjbig.so.2.0
+	docker exec ${DOCKER_CONTAINER} /bin/cat /usr/lib64/libXau.so.6 > ${DIST_PATH}/modules/libXau.so.6
 
 	# Remove temporary PHP container
 	docker rm --force ${DOCKER_CONTAINER} || true
