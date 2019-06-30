@@ -1,6 +1,4 @@
 const path = require('path');
-const fs = require('fs');
-const { promisify } = require('util');
 const {
   createLambda,
   rename,
@@ -44,7 +42,7 @@ async function getIncludedFiles({ files, workPath, config, meta }) {
 // ###########################
 
 exports.config = {
-  maxLambdaSize: '15mb',
+  maxLambdaSize: '30mb',
 };
 
 exports.build = async ({
@@ -62,7 +60,6 @@ exports.build = async ({
   console.log('Config:', config);
   console.log('Work path:', workPath);
   console.log('Meta:', meta);
-  console.log('Included files:', Object.keys(includedFiles));
   console.log('User files:', Object.keys(userFiles));
   console.log('Bridge files:', Object.keys(bridgeFiles));
 
