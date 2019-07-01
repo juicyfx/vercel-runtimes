@@ -110,7 +110,8 @@ There is prepared builder for your PHP lambdas `@juicyfx/php`.
 
 ### 🚀 Roadmap
 
-- Support more PHP extensions
+- Support Composer
+- Support `now dev`
 - Resolve known issues (**HELP WANTED**)
 
 ### 🤔 Known Issues
