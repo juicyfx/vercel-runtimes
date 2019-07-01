@@ -57,7 +57,7 @@ async function transformFromAwsRequest({
 }
 
 function query({ filename, body }) {
-  console.log(`Spawning: php ${filename}`);
+  console.log(`🐘 Spawning: php ${filename}`);
 
   return new Promise((resolve) => {
     var response = '';
@@ -67,9 +67,9 @@ function query({ filename, body }) {
       ['-c', 'php.ini', filename],
       {
         stdio: ['pipe', 'pipe', 'pipe'],
-        cwd: '/var/task/native',
+        cwd: '/var/task/php',
         env: {
-          LD_LIBRARY_PATH: '/var/task/native/modules:' + (process.env.LD_LIBRARY_PATH || '')
+          ...process.env
         }
       },
     );
@@ -81,7 +81,7 @@ function query({ filename, body }) {
 
     // Logging
     php.stderr.on('data', function (data) {
-      console.errror(`STDERR: ${data}`);
+      console.error(`STDERR: ${data}`);
     });
 
     // PHP script execution end

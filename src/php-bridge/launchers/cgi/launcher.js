@@ -61,8 +61,8 @@ function createCGIReq({ filename, path, host, method, headers }) {
   const { search } = parseUrl(path);
 
   const env = {
-    SERVER_ROOT: '/var/task/native',
-    DOCUMENT_ROOT: '/var/task/native',
+    SERVER_ROOT: '/var/task/user',
+    DOCUMENT_ROOT: '/var/task/user',
     SERVER_NAME: host,
     SERVER_PORT: 443,
     HTTPS: "On",
@@ -76,7 +76,8 @@ function createCGIReq({ filename, path, host, method, headers }) {
     GATEWAY_INTERFACE: "CGI/1.1",
     SERVER_PROTOCOL: "HTTP/1.1",
     PATH: process.env.PATH,
-    SERVER_SOFTWARE: "ZEIT Now PHP"
+    SERVER_SOFTWARE: "ZEIT Now PHP",
+    LD_LIBRARY_PATH: process.env.LD_LIBRARY_PATH
   };
 
   if (headers["content-length"]) {
@@ -115,9 +116,9 @@ function parseCGIResponse(response) {
   let statusCode = 200;
   const rawHeaders = response.substr(0, headersPos);
   const rawBody = response.substr(headersPos);
-  
+
   const headers = parseCGIHeaders(rawHeaders);
-  
+
   if (headers['status']) {
     statusCode = parseInt(headers['status']) || 200;
   }
@@ -152,7 +153,7 @@ function parseCGIHeaders(headers) {
 }
 
 function query({ filename, path, host, headers, method, body }) {
-  console.log(`Spawning: php-cgi ${filename}`);
+  console.log(`🐘 Spawning: php-cgi ${filename}`);
 
   const cgiReq = createCGIReq({ filename, path, host, headers, method })
 
@@ -164,9 +165,8 @@ function query({ filename, path, host, headers, method, body }) {
       ['-c', 'php.ini', filename],
       {
         stdio: ['pipe', 'pipe', 'pipe'],
-        cwd: '/var/task/native',
+        cwd: '/var/task/php',
         env: {
-          LD_LIBRARY_PATH: '/var/task/native/modules:' + (process.env.LD_LIBRARY_PATH || ''),
           ...cgiReq.env
         }
       },
@@ -179,13 +179,13 @@ function query({ filename, path, host, headers, method, body }) {
 
     // Logging
     php.stderr.on('data', function (data) {
-      console.errror(`STDERR: ${data}`);
+      console.error(`🐘 STDERR`, data.toString());
     });
 
     // PHP script execution end
     php.on('close', function (code, signal) {
       if (code !== 0) {
-        console.log(`PHP process closed code ${code} and signal ${signal}`);
+        console.log(`🐘 PHP process closed code ${code} and signal ${signal}`);
       }
 
       const { headers, body, statusCode } = parseCGIResponse(response);

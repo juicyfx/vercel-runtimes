@@ -16,9 +16,6 @@ function getFiles() {
     'fastcgi/index.js': new FileFsRef({
       fsPath: path.join(__dirname, 'fastcgi/index.js'),
     }),
-    'fastcgi/port.js': new FileFsRef({
-      fsPath: path.join(__dirname, 'fastcgi/port.js'),
-    }),
     'launcher.js': new FileFsRef({
       fsPath: path.join(__dirname, 'launcher.js'),
     })

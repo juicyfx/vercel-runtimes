@@ -9,7 +9,7 @@ const configuration = require('./config');
 const writeFile = promisify(fs.writeFile);
 
 async function installPhp({ workPath, config }) {
-  console.log(`Installing PHP ${configuration.getVersion(config)} libs 🚀`);
+  console.log(`🐘 Installing PHP ${configuration.getVersion(config)} lib.`);
 
   // Install defined PHP version on the fly into the tmp folder
   const packageJson = {
@@ -26,7 +26,7 @@ async function installPhp({ workPath, config }) {
     '--prefer-offline',
   ]);
 
-  console.log('Installing PHP libs ✅');
+  console.log('🐘 Installing PHP lib done.');
 }
 
 async function getPhpFiles({ workPath, config }) {
@@ -44,23 +44,23 @@ async function getPhpFiles({ workPath, config }) {
   const mode = configuration.getMode(config);
 
   if (mode === 'server') {
-    delete files['native/php-cgi'];
-    delete files['native/php-fpm'];
-    delete files['native/php-fpm.ini'];
+    delete files['php/php-cgi'];
+    delete files['php/php-fpm'];
+    delete files['php/php-fpm.ini'];
 
   } else if (mode === 'fpm') {
-    delete files['native/php'];
-    delete files['native/php-cgi'];
+    delete files['php/php'];
+    delete files['php/php-cgi'];
 
   } else if (mode === 'cli') {
-    delete files['native/php-cgi'];
-    delete files['native/php-fpm'];
-    delete files['native/php-fpm.ini'];
+    delete files['php/php-cgi'];
+    delete files['php/php-fpm'];
+    delete files['php/php-fpm.ini'];
 
   } else if (mode === 'cgi') {
-    delete files['native/php'];
-    delete files['native/php-fpm'];
-    delete files['native/php-fpm.ini'];
+    delete files['php/php'];
+    delete files['php/php-fpm'];
+    delete files['php/php-fpm.ini'];
 
   } else {
     throw new Error(`Invalid config.mode "${config.mode}" given. Supported modes are server|cgi|cli|fpm.`);

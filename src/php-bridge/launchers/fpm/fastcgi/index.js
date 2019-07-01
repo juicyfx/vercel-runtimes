@@ -1,11 +1,9 @@
-/* eslint-disable no-bitwise,no-use-before-define */
-
 const assert = require('assert');
+const net = require('net');
 const { freeParser } = require('_http_common');
 const { spawn } = require('child_process');
 const createConnection = require('./connection.js');
 const { MSG_TYPE, PROTOCOL_STATUS } = require('./consts.js');
-const { whenPortOpens } = require('./port.js');
 
 const { HTTPParser } = process.binding('http_parser');
 const BEGIN_REQUEST_DATA_KEEP_CONN = Buffer.from('\0\x01\x01\0\0\0\0\0'); // FCGI_ROLE_RESPONDER && FCGI_KEEP_CONN
@@ -19,33 +17,32 @@ let connection;
 async function startPhp() {
   assert(!connection);
 
-  console.log('Starting PHP');
+  console.log('🐘 Starting PHP');
 
   const child = spawn(
     './php-fpm',
     ['-c', 'php.ini', '--fpm-config', 'php-fpm.ini', '--nodaemonize'],
     {
       stdio: 'inherit',
-      cwd: '/var/task/native',
+      cwd: '/var/task/php',
       env: {
-        LD_LIBRARY_PATH: '/var/task/native/modules:' + (process.env.LD_LIBRARY_PATH || '')
+        ...process.env
       }
     },
   );
 
   child.on('exit', (code, signal) => {
-    console.error(`php exited with code ${code} and signal ${signal}`);
+    console.error(`🐘 PHP exited with code ${code} and signal ${signal}`);
     process.exit(1);
   });
 
   child.on('close', (code, signal) => {
-    console.error(`php closed with code ${code} and signal ${signal}`);
+    console.error(`🐘 PHP closed with code ${code} and signal ${signal}`);
     process.exit(1);
   });
 
   child.on('error', (error) => {
-    console.error('php errored');
-    console.error(error);
+    console.error('🐘 PHP errored', error);
     process.exit(1);
   });
 
@@ -73,6 +70,29 @@ async function startPhp() {
       newConnection.removeListener('error', onError);
       newConnection.removeListener('connect', onConnect);
     }
+  });
+}
+
+function whenPortOpensCallback(port, attempts, cb) {
+  const client = net.connect(port, '127.0.0.1');
+  client.on('error', (error) => {
+    if (!attempts) return cb(error);
+    setTimeout(() => {
+      whenPortOpensCallback(port, attempts - 1, cb);
+    }, 50);
+  });
+  client.on('connect', () => {
+    client.destroy();
+    cb();
+  });
+}
+
+function whenPortOpens(port, attempts) {
+  return new Promise((resolve, reject) => {
+    whenPortOpensCallback(port, attempts, (error) => {
+      if (error) return reject(error);
+      resolve();
+    });
   });
 }
 

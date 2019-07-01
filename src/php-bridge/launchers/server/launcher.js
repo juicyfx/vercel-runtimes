@@ -1,7 +1,7 @@
 const http = require('http');
 const { spawn } = require('child_process');
 const { parse } = require('url');
-const { whenPortOpens } = require('./port.js');
+const net = require('net');
 
 let connection;
 
@@ -57,26 +57,26 @@ async function transformFromAwsRequest({
 }
 
 async function startServer() {
-  console.log(`Spawning: php-devserver`);
+  console.log(`🐘 Spawning: php-devserver`);
 
   const devserver = spawn(
     './php',
     ['-c', 'php.ini', '-S', '127.0.0.1:8000', '-t', '/var/task/user'],
     {
       stdio: ['pipe', 'pipe', 'pipe'],
-      cwd: '/var/task/native',
+      cwd: '/var/task/php',
       env: {
-        LD_LIBRARY_PATH: '/var/task/native/modules:' + (process.env.LD_LIBRARY_PATH || '')
+        ...process.env
       }
     },
   );
 
   devserver.on('close', function (code, signal) {
-    console.log(`PHP process closed code ${code} and signal ${signal}`);
+    console.log(`🐘 PHP process closed code ${code} and signal ${signal}`);
   });
 
   devserver.on('error', function (err) {
-    console.error(`PHP process errored ${err}`);
+    console.error(`🐘 PHP process errored ${err}`);
   });
 
   await whenPortOpens(8000, 400);
@@ -119,7 +119,7 @@ async function query({ filename, uri, headers, method, body }) {
     });
 
     req.on('error', (error) => {
-      console.error('HTTP errored', error);
+      console.error('🐘 HTTP errored', error);
       resolve({
         body: 'HTTP error',
         headers: {},
@@ -132,6 +132,29 @@ async function query({ filename, uri, headers, method, body }) {
     }
 
     req.end();
+  });
+}
+
+function whenPortOpensCallback(port, attempts, cb) {
+  const client = net.connect(port, '127.0.0.1');
+  client.on('error', (error) => {
+    if (!attempts) return cb(error);
+    setTimeout(() => {
+      whenPortOpensCallback(port, attempts - 1, cb);
+    }, 50);
+  });
+  client.on('connect', () => {
+    client.destroy();
+    cb();
+  });
+}
+
+function whenPortOpens(port, attempts) {
+  return new Promise((resolve, reject) => {
+    whenPortOpensCallback(port, attempts, (error) => {
+      if (error) return reject(error);
+      resolve();
+    });
   });
 }
 

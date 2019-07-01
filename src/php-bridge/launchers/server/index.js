@@ -6,9 +6,6 @@ function getFiles() {
     'launcher.js': new FileFsRef({
       fsPath: path.join(__dirname, 'launcher.js'),
     }),
-    'port.js': new FileFsRef({
-      fsPath: path.join(__dirname, 'port.js'),
-    })
   };
 }
 
