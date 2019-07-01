@@ -2,19 +2,24 @@ const FileBlob = require('@now/build-utils/file-blob.js');
 const glob = require('@now/build-utils/fs/glob.js');
 
 async function getFiles() {
-  // Lookup for all files in native folder
-  const files = await glob('native/**', __dirname);
+  // Lookup for PHP bins, modules and shared libs
+  const files = {
+    ...await glob('php/**', __dirname),
+    ...await glob('lib/**', __dirname),
+  };
 
   // Replace paths in php.ini file
   const phpini = await FileBlob.fromStream({
-    stream: files['native/php.ini'].toStream(),
+    stream: files['php/php.ini'].toStream(),
   });
+
   phpini.data = phpini.data
     .toString()
-    .replace(/\/opt\/now\/modules/g, '/var/task/native/modules');
-  files['native/php.ini'] = phpini;
+    .replace(/\/opt\/now\/modules/g, '/var/task/php/modules');
+  files['php/php.ini'] = phpini;
 
-  console.log(phpini.data.toString());
+  // Dump content of php.ini to known enabled extensions
+  console.log('🐘 PHP.ini', phpini.data.toString());
 
   return files;
 }

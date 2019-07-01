@@ -39,9 +39,11 @@ RUN yum install -y \
         ${PHP}-php-xml \
         ${PHP}-php-xmlrpc
 
+RUN curl -sS https://getcomposer.org/installer | ${PHP} -- --install-dir=/usr/bin --filename=composer
+
 # $ORIGIN refers to the current directory, don't evaluate it, use the single quotes
-RUN patchelf --set-rpath '$ORIGIN' /usr/bin/${PHP}
-RUN patchelf --set-rpath '$ORIGIN' /usr/bin/${PHP}-cgi
+RUN patchelf --set-rpath '$ORIGIN' /opt/remi/${PHP}/root/usr/bin/php
+RUN patchelf --set-rpath '$ORIGIN' /opt/remi/${PHP}/root/usr/bin/php-cgi
 RUN patchelf --set-rpath '$ORIGIN' /opt/remi/${PHP}/root/usr/sbin/php-fpm
 RUN patchelf --set-rpath '$ORIGIN' /opt/remi/${PHP}/root/usr/lib64/php/modules/apcu.so
 RUN patchelf --set-rpath '$ORIGIN' /opt/remi/${PHP}/root/usr/lib64/php/modules/bcmath.so
@@ -87,4 +89,5 @@ RUN patchelf --set-rpath '$ORIGIN' /opt/remi/${PHP}/root/usr/lib64/php/modules/x
 WORKDIR /opt/now
 
 ADD ./conf /opt/now/
-ADD ./scripts /opt/now/
+ADD ./test /opt/now/
+
