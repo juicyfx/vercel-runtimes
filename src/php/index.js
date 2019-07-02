@@ -2,40 +2,13 @@ const path = require('path');
 const {
   createLambda,
   rename,
-  glob,
-  download,
   shouldServe,
 } = require('@now/build-utils');
 const {
   getPhpFiles,
-  getLauncherFiles
+  getLauncherFiles,
+  getIncludedFiles
 } = require('@juicyfx/php-bridge');
-
-async function getIncludedFiles({ files, workPath, config, meta }) {
-  // Download all files to workPath
-  const downloadedFiles = await download(files, workPath, meta);
-
-  let includedFiles = {};
-  if (config && config.includeFiles) {
-    // Find files for each glob
-    // eslint-disable-next-line no-restricted-syntax
-    for (const pattern of config.includeFiles) {
-      // eslint-disable-next-line no-await-in-loop
-      const matchedFiles = await glob(pattern, workPath);
-      Object.assign(includedFiles, matchedFiles);
-    }
-    // explicit and always include the entrypoint
-    Object.assign(includedFiles, {
-      [entrypoint]: files[entrypoint],
-    });
-  } else {
-    // Backwards compatibility
-    includedFiles = downloadedFiles;
-  }
-
-  return includedFiles;
-}
-
 
 // ###########################
 // EXPORTS
@@ -44,6 +17,10 @@ async function getIncludedFiles({ files, workPath, config, meta }) {
 exports.config = {
   maxLambdaSize: '30mb',
 };
+
+exports.analyze = ({ files, entrypoint }) => files[entrypoint].digest;
+
+exports.shouldServe = shouldServe;
 
 exports.build = async ({
   files, entrypoint, workPath, config, meta,
@@ -74,5 +51,3 @@ exports.build = async ({
 
   return { [entrypoint]: lambda };
 };
-
-exports.shouldServe = shouldServe;

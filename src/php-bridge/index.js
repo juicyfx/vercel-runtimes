@@ -2,7 +2,9 @@ const path = require('path');
 const fs = require('fs');
 const { promisify } = require('util');
 const {
-  runNpmInstall
+  runNpmInstall,
+  glob,
+  download,
 } = require('@now/build-utils');
 const launchers = require('./launchers');
 const configuration = require('./config');
@@ -86,8 +88,34 @@ function getLauncherFiles(config) {
   }
 }
 
+async function getIncludedFiles({ files, workPath, config, meta }) {
+  // Download all files to workPath
+  const downloadedFiles = await download(files, workPath, meta);
+
+  let includedFiles = {};
+  if (config && config.includeFiles) {
+    // Find files for each glob
+    // eslint-disable-next-line no-restricted-syntax
+    for (const pattern of config.includeFiles) {
+      // eslint-disable-next-line no-await-in-loop
+      const matchedFiles = await glob(pattern, workPath);
+      Object.assign(includedFiles, matchedFiles);
+    }
+    // explicit and always include the entrypoint
+    Object.assign(includedFiles, {
+      [entrypoint]: files[entrypoint],
+    });
+  } else {
+    // Backwards compatibility
+    includedFiles = downloadedFiles;
+  }
+
+  return includedFiles;
+}
+
 module.exports = {
   installPhp,
   getPhpFiles,
   getLauncherFiles,
+  getIncludedFiles
 }
