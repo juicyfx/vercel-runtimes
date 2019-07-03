@@ -1,8 +1,11 @@
 {
   "name": "@juicyfx/php-caddy",
-  "version": "0.0.1-canary.12",
+  "version": "0.0.1-canary.16",
   "license": "MIT",
   "dependencies": {
-    "@juicyfx/php-lib-73": "canary"
+    "@juicyfx/php-bridge": "^0.0.2-canary.1"
+  },
+  "devDependencies": {
+    "@now/build-utils": "0.6.0"
   }
 }

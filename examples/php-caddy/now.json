@@ -5,9 +5,9 @@
     "regions": ["bru1"],
     "public": true,
     "builds": [
-      { "src": "*.php", "use": "@juicyfx/php-caddy@canary" }
+      { "src": "*.php", "use": "@juicyfx/php-caddy@canary", "config": { "v": "7.4" } }
     ],
     "env": {
-      "REV": "1"
+      "REV": "2"
     }
   }

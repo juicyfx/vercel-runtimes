@@ -1,7 +1,7 @@
 const http = require('http');
 const { spawn } = require('child_process');
 const { parse } = require('url');
-const { whenPortOpens } = require('./port.js');
+const net = require('net');
 
 let connFpm;
 let connCaddy;
@@ -58,26 +58,26 @@ async function transformFromAwsRequest({
 }
 
 async function startFpm() {
-    console.log(`Spawning: PHP-FPM`);
+    console.log(`🐘 Spawning: PHP-FPM`);
 
     const fpm = spawn(
         './php-fpm',
         ['-c', 'php.ini', '--fpm-config', 'php-fpm.ini', '--nodaemonize'],
         {
-            stdio: 'inherit',
-            cwd: '/var/task/native',
+            stdio: ['pipe', 'pipe', 'pipe'],
+            cwd: '/var/task/php',
             env: {
-                LD_LIBRARY_PATH: '/var/task/native/modules:' + (process.env.LD_LIBRARY_PATH || '')
+                ...process.env
             }
         },
     );
 
     fpm.on('close', function (code, signal) {
-        console.log(`PHP-FPM process closed code ${code} and signal ${signal}`);
+        console.log(`🐘 PHP-FPM process closed code ${code} and signal ${signal}`);
     });
 
     fpm.on('error', function (err) {
-        console.error(`PHP-FPM process errored ${err}`);
+        console.error(`🐘 PHP-FPM process errored ${err}`);
     });
 
     process.on('exit', () => {
@@ -91,7 +91,7 @@ async function startFpm() {
 }
 
 async function startCaddy() {
-    console.log(`Spawning: Caddy`);
+    console.log(`🚀 Spawning: Caddy`);
 
     const caddy = spawn(
         './caddy',
@@ -103,11 +103,11 @@ async function startCaddy() {
     );
 
     caddy.on('close', function (code, signal) {
-        console.log(`Caddy process closed code ${code} and signal ${signal}`);
+        console.log(`🚀 Caddy process closed code ${code} and signal ${signal}`);
     });
 
     caddy.on('error', function (err) {
-        console.error(`Caddy process errored ${err}`);
+        console.error(`🚀 Caddy process errored ${err}`);
     });
 
     process.on('exit', () => {
@@ -118,6 +118,29 @@ async function startCaddy() {
     await whenPortOpens(8000, 400);
 
     connCaddy = caddy;
+}
+
+function whenPortOpensCallback(port, attempts, cb) {
+    const client = net.connect(port, '127.0.0.1');
+    client.on('error', (error) => {
+        if (!attempts) return cb(error);
+        setTimeout(() => {
+            whenPortOpensCallback(port, attempts - 1, cb);
+        }, 50);
+    });
+    client.on('connect', () => {
+        client.destroy();
+        cb();
+    });
+}
+
+function whenPortOpens(port, attempts) {
+    return new Promise((resolve, reject) => {
+        whenPortOpensCallback(port, attempts, (error) => {
+            if (error) return reject(error);
+            resolve();
+        });
+    });
 }
 
 async function query({ filename, uri, headers, method, body }) {
@@ -153,9 +176,9 @@ async function query({ filename, uri, headers, method, body }) {
         });
 
         req.on('error', (error) => {
-            console.error('HTTP errored', error);
+            console.error('🐘 HTTP errored', error);
             resolve({
-                body: 'HTTP error',
+                body: `HTTP errored: ${error}`,
                 headers: {},
                 statusCode: 500
             });

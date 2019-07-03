@@ -1,13 +1,18 @@
+const path = require('path');
 const {
-  glob,
-  download,
   createLambda,
   shouldServe,
   rename,
-} = require('@now/build-utils'); // eslint-disable-line import/no-extraneous-dependencies
+} = require('@now/build-utils');
 const FileFsRef = require('@now/build-utils/file-fs-ref.js');
-const path = require('path');
-const { getFiles } = require('@juicyfx/php-lib-73');
+const {
+  getPhpFiles,
+  getIncludedFiles
+} = require('@juicyfx/php-bridge');
+
+// ###########################
+// EXPORTS
+// ###########################
 
 exports.config = {
   maxLambdaSize: '45mb',
@@ -15,23 +20,21 @@ exports.config = {
 
 exports.analyze = ({ files, entrypoint }) => files[entrypoint].digest;
 
+exports.shouldServe = shouldServe;
+
 exports.build = async ({
-  workPath, files, entrypoint, config,
+  files, entrypoint, workPath, config, meta,
 }) => {
-  const downloadedFiles = await download(files, workPath);
-  const userFiles = rename(downloadedFiles, name => path.join('user', name));
+  const includedFiles = await getIncludedFiles({ files, workPath, config, meta });
 
-  console.log('Files:', Object.keys(userFiles));
-  console.log('Entrypoint:', entrypoint);
+  const userFiles = rename(includedFiles, name => path.join('user', name));
 
+  const bridgeConfig = { ...config, ...{ 'mode': 'fpm' }  };
   const bridgeFiles = {
-    ...await getFiles(),
+    ...await getPhpFiles({ workPath, config: bridgeConfig }),
     ...{
       'launcher.js': new FileFsRef({
         fsPath: path.join(__dirname, 'launcher.js'),
-      }),
-      'port.js': new FileFsRef({
-        fsPath: path.join(__dirname, 'port.js'),
       }),
       'caddy': new FileFsRef({
         mode: 0o755,
@@ -43,9 +46,12 @@ exports.build = async ({
     }
   };
 
-  console.log('Bridge files', Object.keys(bridgeFiles));
-
-  console.log('Lambda creating');
+  console.log('Entrypoint:', entrypoint);
+  console.log('Config:', bridgeConfig);
+  console.log('Work path:', workPath);
+  console.log('Meta:', meta);
+  console.log('User files:', Object.keys(userFiles));
+  console.log('Bridge files:', Object.keys(bridgeFiles));
 
   const lambda = await createLambda({
     files: { ...userFiles, ...bridgeFiles },
@@ -58,5 +64,3 @@ exports.build = async ({
 
   return { [entrypoint]: lambda };
 };
-
-exports.shouldServe = shouldServe;
