@@ -8,6 +8,6 @@
       { "src": "*.php", "use": "@juicyfx/php-bref@canary"}
     ],
     "env": {
-      "REV": "6"
+      "REV": "7"
     }
 }

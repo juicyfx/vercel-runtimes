@@ -1,12 +1,16 @@
 const {
-  glob,
   download,
   createLambda,
   shouldServe,
-} = require('@now/build-utils'); // eslint-disable-line import/no-extraneous-dependencies
+  rename,
+} = require('@now/build-utils');
 const FileFsRef = require('@now/build-utils/file-fs-ref.js');
 const path = require('path');
 const { getFiles } = require('@juicyfx/php-bref-lib-73');
+
+// ###########################
+// EXPORTS
+// ###########################
 
 exports.config = {
   maxLambdaSize: '45mb',
@@ -14,17 +18,16 @@ exports.config = {
 
 exports.analyze = ({ files, entrypoint }) => files[entrypoint].digest;
 
-exports.build = async ({
-  workPath, files, entrypoint, config,
-}) => {
-  const downloadedFiles = await download(files, workPath);
+exports.shouldServe = shouldServe;
 
-  console.log('Files:', Object.keys(downloadedFiles));
-  console.log('Entrypoint:', entrypoint);
+exports.build = async ({
+  files, entrypoint, workPath, config, meta,
+}) => {
+  const downloadedFiles = await download(files, workPath, meta);
+  const userFiles = rename(downloadedFiles, name => path.join('user', name));
 
   const bridgeFiles = {
     ...await getFiles(),
-    ...await glob('**', workPath),
     ...{
       'bootstrap': new FileFsRef({
         mode: 0o755,
@@ -33,21 +36,18 @@ exports.build = async ({
     }
   };
 
-  console.log('Bridge files', Object.keys(bridgeFiles));
-
-  console.log('Lambda creating');
+  console.log('Entrypoint:', entrypoint);
+  console.log('Config:', config);
+  console.log('Work path:', workPath);
+  console.log('Meta:', meta);
+  console.log('User files:', Object.keys(userFiles));
+  console.log('Bridge files:', Object.keys(bridgeFiles));
 
   const lambda = await createLambda({
-    files: bridgeFiles,
+    files: { ...userFiles, ...bridgeFiles },
     handler: entrypoint,
     runtime: 'provided',
   });
 
-  console.log('Lambda created');
-
-  return {
-    [entrypoint]: lambda,
-  };
+  return { [entrypoint]: lambda };
 };
-
-exports.shouldServe = shouldServe;
