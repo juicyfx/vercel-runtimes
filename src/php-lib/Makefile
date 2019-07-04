@@ -8,7 +8,7 @@ DIST_LIB_PATH=${DIST_PATH}/lib
 DOCKER_IMAGE=juicyfx/now-php-${DIST_PHP}
 DOCKER_CONTAINER=juicyfx-now-php-${DIST_PHP}
 
-.PHONY: build72 build73 build74 dist72 dist73 dist74 
+.PHONY: build72 build73 build74 dist72 dist73 dist74
 
 # ######################
 # Building Docker images
@@ -63,13 +63,13 @@ __distribution:
 	docker exec ${DOCKER_CONTAINER} /bin/cat /opt/remi/php${DIST_PHP}/root/usr/bin/php > ${DIST_PHP_PATH}/php
 	docker exec ${DOCKER_CONTAINER} /bin/cat /opt/remi/php${DIST_PHP}/root/usr/bin/php-cgi > ${DIST_PHP_PATH}/php-cgi
 	docker exec ${DOCKER_CONTAINER} /bin/cat /opt/remi/php${DIST_PHP}/root/usr/sbin/php-fpm > ${DIST_PHP_PATH}/php-fpm
-	
+
 	# Make these binaries executable
 	chmod +x ${DIST_PHP_PATH}/composer
 	chmod +x ${DIST_PHP_PATH}/php
 	chmod +x ${DIST_PHP_PATH}/php-cgi
 	chmod +x ${DIST_PHP_PATH}/php-fpm
-	
+
 	# Copy php.ini & php-fpm.ini
 	docker exec ${DOCKER_CONTAINER} /bin/cat /opt/now/php.ini > ${DIST_PHP_PATH}/php.ini
 	docker exec ${DOCKER_CONTAINER} /bin/cat /opt/now/php-fpm.ini > ${DIST_PHP_PATH}/php-fpm.ini
@@ -222,8 +222,6 @@ test-runtime:
 		-v $(CURDIR)/v7.3/php:/opt/now/ \
 		-v $(CURDIR)/v7.3/lib:/var/task/lib \
 		-w /opt/now \
-		-p 9000:9000 \
-		-p 2015:2015 \
 		--entrypoint /bin/bash \
 		lambci/lambda:nodejs10.x
 
