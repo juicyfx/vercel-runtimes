@@ -95,9 +95,7 @@ async function getIncludedFiles({ files, workPath, config, meta }) {
   let includedFiles = {};
   if (config && config.includeFiles) {
     // Find files for each glob
-    // eslint-disable-next-line no-restricted-syntax
     for (const pattern of config.includeFiles) {
-      // eslint-disable-next-line no-await-in-loop
       const matchedFiles = await glob(pattern, workPath);
       Object.assign(includedFiles, matchedFiles);
     }

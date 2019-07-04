@@ -89,7 +89,6 @@ async function transformFromAwsRequest({
   params.SERVER_PORT = 443;
   params.HTTPS = 'on';
 
-  // eslint-disable-next-line no-restricted-syntax
   for (const [k, v] of Object.entries(headers)) {
     const camel = k.toUpperCase().replace(/-/g, '_');
     params[`HTTP_${camel}`] = v;
@@ -106,7 +105,6 @@ async function transformFromAwsRequest({
 function transformToAwsResponse({ tuples, body }) {
   let statusCode = 200;
   const headers = {};
-  // eslint-disable-next-line no-param-reassign
   if (!body) body = Buffer.alloc(0);
   assert(Buffer.isBuffer(body));
 
