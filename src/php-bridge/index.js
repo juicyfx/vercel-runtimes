@@ -1,10 +1,11 @@
 const path = require('path');
 const fs = require('fs');
+const { spawn } = require('child_process');
 const { promisify } = require('util');
 const {
   runNpmInstall,
   glob,
-  download,
+  download
 } = require('@now/build-utils');
 const launchers = require('./launchers');
 const configuration = require('./config');
@@ -28,14 +29,14 @@ async function installPhp({ workPath, config }) {
     '--prefer-offline',
   ]);
 
-  console.log('🐘 Installing PHP lib done.');
+  console.log(`🐘 Installing PHP ${configuration.getVersion(config)} lib OK.`);
 }
 
 async function getPhpFiles({ workPath, config }) {
   await installPhp({ workPath, config });
 
   // Resolve dynamically installed PHP lib package in tmp folder
-  const phpLibPkgPath = path.dirname(path.join(workPath, 'package.json'))
+  const phpLibPkgPath = workPath
     + '/node_modules/'
     + configuration.getPhpNpm(config);
 
@@ -66,6 +67,13 @@ async function getPhpFiles({ workPath, config }) {
 
   } else {
     throw new Error(`Invalid config.mode "${config.mode}" given. Supported modes are server|cgi|cli|fpm.`);
+  }
+
+  // Install composer dependencies
+  if (config && config.composer === true) {
+    console.log('🐘 Installing Composer deps.');
+    await runComposerInstall(workPath, phpLibPkgPath);
+    console.log('🐘 Installing Composer deps OK.');
   }
 
   return files;
@@ -111,9 +119,59 @@ async function getIncludedFiles({ files, workPath, config, meta }) {
   return includedFiles;
 }
 
+async function runComposerInstall(workPath, pkgDir) {
+  const phpDir = path.join(pkgDir, 'php');
+  const libDir = path.join(pkgDir, 'lib');
+
+  await spawnAsync('npm', ['install', '@now/php-bridge@canary'], workPath);
+
+  console.log(fs.readdirSync(workPath + '/node_modules/@now/php-bridge/native'));
+  console.log(fs.readdirSync(workPath + '/node_modules/@now/php-bridge/native'));
+
+  try {
+    await spawnAsync(
+      './php',
+      [path.join(phpDir, 'composer'), 'install', '--profile', '--no-dev', '--no-interaction', '--no-scripts', '--ignore-platform-reqs'],
+      workPath + '/node_modules/@now/php-bridge/native',
+      {
+        env: {
+          LD_LIBRARY_PATH: `${workPath + '/node_modules/@now/php-bridge/native'}:${process.env.LD_LIBRARY_PATH}`
+        }
+      }
+    );
+  } catch (e) {
+    console.error(e);
+    process.exit(1);
+  }
+}
+
+function spawnAsync(command, args, cwd, opts = {}) {
+  return new Promise((resolve, reject) => {
+    const child = spawn(command, args, {
+      stdio: 'inherit',
+      cwd,
+      ...opts
+    });
+
+    child.on('error', reject);
+    child.on('exit', (code, signal) => {
+      if (code === 0) {
+        resolve();
+      } else {
+        reject(new Error(`Exited with ${code || signal}`));
+      }
+    });
+  })
+}
+
 module.exports = {
   installPhp,
   getPhpFiles,
   getLauncherFiles,
-  getIncludedFiles
-}
+  getIncludedFiles,
+  runComposerInstall
+};
+
+// (async () => {
+//   await runComposerInstall(process.env.NOW_PHP);
+// })();

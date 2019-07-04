@@ -1,0 +1,13 @@
+{
+    "version": 2,
+    "name": "now-builders-php-composer",
+    "scope": "juicyfx",
+    "regions": ["all"],
+    "public": true,
+    "builds": [
+      { "src": "*.php", "use": "@juicyfx/php@canary", "config": {"mode": "server", "composer": true} }
+    ],
+    "env": {
+      "REV": "1"
+    }
+  }
