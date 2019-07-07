@@ -7,7 +7,9 @@ const {
 const {
   getPhpFiles,
   getLauncherFiles,
-  getIncludedFiles
+  getIncludedFiles,
+  getComposerFiles,
+  getRuntime
 } = require('@juicyfx/php-bridge');
 
 // ###########################
@@ -25,15 +27,22 @@ exports.shouldServe = shouldServe;
 exports.build = async ({
   files, entrypoint, workPath, config, meta,
 }) => {
-  const includedFiles = await getIncludedFiles({ files, workPath, config, meta });
+  const runtime = getRuntime(config);
 
-  const userFiles = rename(includedFiles, name => path.join('user', name));
   const bridgeFiles = {
     ...await getPhpFiles({ workPath, config }),
     ...await getLauncherFiles(config),
   };
 
+  const includedFiles = {
+    ...await getIncludedFiles({ files, workPath, config, meta }),
+    ...await getComposerFiles({ workPath, config })
+  }
+
+  const userFiles = rename(includedFiles, name => path.join('user', name));
+
   console.log('Entrypoint:', entrypoint);
+  console.log('Runtime:', runtime);
   console.log('Config:', config);
   console.log('Work path:', workPath);
   console.log('Meta:', meta);
@@ -43,7 +52,7 @@ exports.build = async ({
   const lambda = await createLambda({
     files: { ...userFiles, ...bridgeFiles },
     handler: 'launcher.launcher',
-    runtime: 'nodejs10.x',
+    runtime,
     environment: {
       NOW_ENTRYPOINT: entrypoint,
     },

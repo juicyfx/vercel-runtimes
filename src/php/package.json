@@ -1,9 +1,9 @@
 {
   "name": "@juicyfx/php",
-  "version": "0.0.7-canary.13",
+  "version": "0.0.7",
   "license": "MIT",
   "dependencies": {
-    "@juicyfx/php-bridge": "^0.0.2-canary.1"
+    "@juicyfx/php-bridge": "^0.0.2"
   },
   "devDependencies": {
     "@now/build-utils": "0.6.0"
