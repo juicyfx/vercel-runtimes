@@ -2,7 +2,8 @@ const util = require('util');
 const fs = require('fs');
 const path = require('path');
 const { spawn } = require('child_process');
-const lambda = require('../data/lambda.json');
+const runtime1 = require('../data/runtime1.json');
+const runtime2 = require('../data/runtime2.json');
 
 const readdir = util.promisify(fs.readdir);
 
@@ -25,6 +26,11 @@ async function listPhp() {
 }
 
 function atLambda(lib) {
+    // According to runtime, load the shared libs list
+    const lambda = process.env.AWS_EXECUTION_ENV === 'AWS_Lambda_nodejs8.10'
+        ? runtime1
+        : runtime2;
+
     const folders = Object.keys(lambda);
     for (folder of folders) {
         if (lambda[folder].includes(lib)) {
@@ -37,18 +43,11 @@ function atLambda(lib) {
 }
 
 function analyzeLib(file) {
-    const regex = /^\s*([a-zA-Z0-9\.\-_]+)\s=>\s(.+)$/gm;
+    const regex = /^\s*([a-zA-Z0-9\.\-_]+)\s=>\s(not\sfound|\/.+)$/gm;
     const parseLinks = raw => {
         // linux-vdso.so.1 (0x00007fff65bc9000)
+        // linux-vdso.so.1 =>  (0x00007ffd86fd9000)
         // libexslt.so.0 => not found
-        // libxslt.so.1 => not found
-        // libxml2.so.2 => /lib64/libxml2.so.2 (0x00007f12e673c000)
-        // libz.so.1 => /lib64/libz.so.1 (0x00007f12e6526000)
-        // libdl.so.2 => /lib64/libdl.so.2 (0x00007f12e6322000)
-        // libm.so.6 => /lib64/libm.so.6 (0x00007f12e5fd7000)
-        // libc.so.6 => /lib64/libc.so.6 (0x00007f12e5c21000)
-        // liblzma.so.5 => /lib64/liblzma.so.5 (0x00007f12e59fb000)
-        // /lib64/ld-linux-x86-64.so.2 (0x00007f12e6cac000)
         // libpthread.so.0 => /lib64/libpthread.so.0 (0x00007f12e57dd000)
 
         const matches = [];
