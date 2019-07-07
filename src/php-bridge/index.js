@@ -7,6 +7,7 @@ const {
   glob,
   download
 } = require('@now/build-utils');
+const FileFsRef = require('@now/build-utils/file-fs-ref.js');
 const launchers = require('./launchers');
 const configuration = require('./config');
 const writeFile = promisify(fs.writeFile);
@@ -36,11 +37,8 @@ async function getPhpFiles({ workPath, config }) {
   await installPhp({ workPath, config });
 
   // Resolve dynamically installed PHP lib package in tmp folder
-  const phpLibPkgPath = workPath
-    + '/node_modules/'
-    + configuration.getPhpNpm(config);
-
-  const phpLibPkg = require(phpLibPkgPath);
+  const phpPkg = getPhpPkg({ workPath, config });
+  const phpLibPkg = require(phpPkg);
 
   // Every PHP version MUST have getFiles method!
   const files = await phpLibPkg.getFiles();
@@ -67,13 +65,6 @@ async function getPhpFiles({ workPath, config }) {
 
   } else {
     throw new Error(`Invalid config.mode "${config.mode}" given. Supported modes are server|cgi|cli|fpm.`);
-  }
-
-  // Install composer dependencies
-  if (config && config.composer === true) {
-    console.log('🐘 Installing Composer deps.');
-    await runComposerInstall(workPath, phpLibPkgPath);
-    console.log('🐘 Installing Composer deps OK.');
   }
 
   return files;
@@ -119,23 +110,64 @@ async function getIncludedFiles({ files, workPath, config, meta }) {
   return includedFiles;
 }
 
-async function runComposerInstall(workPath, pkgDir) {
-  const phpDir = path.join(pkgDir, 'php');
-  const libDir = path.join(pkgDir, 'lib');
+async function getComposerFiles({ workPath, config }) {
+  if (!config || config.composer !== true) {
+    console.log('🐘 Skip Composer (config.composer not provided)');
+    return [];
+  }
 
-  await spawnAsync('npm', ['install', '@now/php-bridge@canary'], workPath);
+  if (configuration.getVersion(config) === '7.4') {
+    console.log('🐘 Skip Composer (calling PHP 7.4 is not supported at this moment)');
+    return [];
+  }
 
-  console.log(fs.readdirSync(workPath + '/node_modules/@now/php-bridge/native'));
-  console.log(fs.readdirSync(workPath + '/node_modules/@now/php-bridge/native'));
+  console.log('🐘 Installing Composer deps.');
+
+  // Install composer dependencies
+  await runComposerInstall({ workPath, config });
+
+  console.log('🐘 Installing Composer deps OK.');
+
+  return await glob('vendor/**', workPath);
+}
+
+async function runComposerInstall({ workPath, config }) {
+  const pkgDir = getPhpPkg({ workPath, config });
+  const phpDir = path.join(pkgDir, "php");
+
+  await runPhp(
+    { workPath, config },
+    [
+      `-dextension_dir=${phpDir}/modules`,
+      `${phpDir}/composer`,
+      'install',
+      '--profile',
+      '--no-dev',
+      '--no-interaction',
+      '--no-scripts',
+      '--ignore-platform-reqs'
+    ],
+  );
+}
+
+async function runPhp({ workPath, config }, args) {
+  const phpPkg = getPhpPkg({ workPath, config });
+  const phpDir = path.join(phpPkg, "php");
+  const libDir = path.join(phpPkg, "lib");
 
   try {
     await spawnAsync(
-      './php',
-      [path.join(phpDir, 'composer'), 'install', '--profile', '--no-dev', '--no-interaction', '--no-scripts', '--ignore-platform-reqs'],
-      workPath + '/node_modules/@now/php-bridge/native',
+      'php',
+      [
+        `-dextension_dir=${phpDir}/modules`,
+        ...args
+      ],
+      workPath,
       {
         env: {
-          LD_LIBRARY_PATH: `${workPath + '/node_modules/@now/php-bridge/native'}:${process.env.LD_LIBRARY_PATH}`
+          COMPOSER_HOME: '/tmp',
+          PATH: `${phpDir}:${process.env.PATH}`,
+          LD_LIBRARY_PATH: `${libDir}:/usr/lib64:/lib64:${process.env.LD_LIBRARY_PATH}`
         }
       }
     );
@@ -164,12 +196,26 @@ function spawnAsync(command, args, cwd, opts = {}) {
   })
 }
 
+function getRuntime(config) {
+  return configuration.getRuntime(config);
+}
+
+function getPhpPkg({ workPath, config }) {
+  return workPath
+    + '/node_modules/'
+    + configuration.getPhpNpm(config);
+}
+
 module.exports = {
-  installPhp,
   getPhpFiles,
   getLauncherFiles,
   getIncludedFiles,
-  runComposerInstall
+  getComposerFiles,
+  getRuntime,
+  // Special functions!
+  installPhp,
+  runComposerInstall,
+  runPhp,
 };
 
 // (async () => {

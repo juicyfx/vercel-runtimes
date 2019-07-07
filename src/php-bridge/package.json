@@ -1,6 +1,6 @@
 {
   "name": "@juicyfx/php-bridge",
-  "version": "0.0.2-canary.44",
+  "version": "0.0.2",
   "license": "MIT",
   "dependencies": {
     "fastcgi-client": "0.0.1"
