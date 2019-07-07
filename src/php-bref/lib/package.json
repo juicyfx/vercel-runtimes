@@ -1,6 +1,6 @@
 {
   "name": "@juicyfx/php-bref-lib-73",
-  "version": "0.0.2-canary.3",
+  "version": "0.0.2-canary.4",
   "license": "MIT",
   "dependencies": {
     "@now/build-utils": "^0.6.0"

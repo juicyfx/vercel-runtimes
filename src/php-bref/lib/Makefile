@@ -12,7 +12,7 @@ build:
 	mkdir -p native
 
 	# Extract binaries
-	tar zxvf bref/runtime/export/php-73-fpm.zip -C native 
+	tar zxvf bref/runtime/export/php-73-fpm.zip -C native
 
 	# Replace PHP paths
 	sed -i '' -e "s/\/opt\/bin\/php/\/var\/task\/native\/bref\/bin\/php/g" ./native/bootstrap
