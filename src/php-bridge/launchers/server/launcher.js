@@ -1,6 +1,7 @@
 const http = require('http');
 const { spawn } = require('child_process');
 const { parse } = require('url');
+const { join: pathJoin, dirname: pathDirname } = require('path');
 const net = require('net');
 
 let connection;
@@ -50,18 +51,24 @@ async function transformFromAwsRequest({
 }) {
   const { pathname, search } = parse(path);
 
-  const filename = process.env.NOW_ENTRYPOINT || pathname;
+  const filename = pathJoin(
+    '/var/task/user',
+    process.env.NOW_ENTRYPOINT || pathname,
+  );
+
   const uri = pathname + (search || '');
 
   return { filename, uri, method, headers, body };
 }
 
-async function startServer() {
-  console.log(`🐘 Spawning: php-devserver`);
+async function startServer({ filename }) {
+  const docRoot = pathDirname(filename);
+
+  console.log(`🐘 Spawning: php-devserver at ${docRoot}`);
 
   const devserver = spawn(
     './php',
-    ['-c', 'php.ini', '-S', '127.0.0.1:8000', '-t', '/var/task/user'],
+    ['-c', 'php.ini', '-S', '127.0.0.1:8000', '-t', docRoot],
     {
       stdio: ['pipe', 'pipe', 'pipe'],
       cwd: '/var/task/php',
@@ -91,7 +98,7 @@ async function startServer() {
 
 async function query({ filename, uri, headers, method, body }) {
   if (!connection) {
-    await startServer();
+    await startServer({ filename });
   }
 
   return new Promise(resolve => {
