@@ -16,10 +16,6 @@ const {
 // EXPORTS
 // ###########################
 
-exports.config = {
-  maxLambdaSize: '30mb',
-};
-
 exports.analyze = ({ files, entrypoint }) => files[entrypoint].digest;
 
 exports.shouldServe = shouldServe;
