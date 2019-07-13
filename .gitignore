@@ -1,6 +1,5 @@
+# Node
 node_modules
+
+# Temp
 tmp
-target/
-.next
-coverage
-*.tgz
