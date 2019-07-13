@@ -7,7 +7,9 @@
     "builds": [
       { "src": "*.php", "use": "@juicyfx/php@canary", "config": { "mode": "server", "v": "7.3" }}
     ],
-    "env": {
-      "REV": "10"
+    "build": {
+      "env": {
+        "NOW_PHP_DEBUG": "1"
+      }
     }
 }
