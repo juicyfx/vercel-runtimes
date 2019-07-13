@@ -28,6 +28,7 @@ exports.build = async ({
   files, entrypoint, workPath, config, meta,
 }) => {
   const runtime = getRuntime(config);
+  const _meta = meta || {};
 
   const bridgeFiles = {
     ...await getPhpFiles({ workPath, config }),
@@ -41,13 +42,16 @@ exports.build = async ({
 
   const userFiles = rename(includedFiles, name => path.join('user', name));
 
-  console.log('Entrypoint:', entrypoint);
-  console.log('Runtime:', runtime);
-  console.log('Config:', config);
-  console.log('Work path:', workPath);
-  console.log('Meta:', meta);
-  console.log('User files:', Object.keys(userFiles));
-  console.log('Bridge files:', Object.keys(bridgeFiles));
+  if (process.env.NOW_PHP_DEBUG === '1') {
+    console.log('🐘 Entrypoint:', entrypoint);
+    console.log('🐘 Runtime:', runtime);
+    console.log('🐘 Config:', config);
+    console.log('🐘 Work path:', workPath);
+    console.log('🐘 Meta:', meta);
+    console.log('🐘 User files:', Object.keys(userFiles));
+    console.log('🐘 Bridge files:', Object.keys(bridgeFiles));
+    console.log('🐘 PHP: php.ini', bridgeFiles['php/php.ini'].data.toString());
+  }
 
   const lambda = await createLambda({
     files: { ...userFiles, ...bridgeFiles },
@@ -55,6 +59,7 @@ exports.build = async ({
     runtime,
     environment: {
       NOW_ENTRYPOINT: entrypoint,
+      NOW_PHP_DEV: _meta.isDev ? '1' : '0'
     },
   });
 
