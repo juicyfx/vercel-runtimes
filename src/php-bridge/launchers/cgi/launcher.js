@@ -2,6 +2,10 @@ const { spawn } = require('child_process');
 const { parse: parseUrl } = require('url');
 const { join: pathJoin } = require('path');
 
+const PHP_DIR = pathJoin(process.env.LAMBDA_TASK_ROOT, 'php');
+const USER_DIR = pathJoin(process.env.LAMBDA_TASK_ROOT, 'user');
+const isDev = process.env.NOW_PHP_DEV === '1';
+
 function normalizeEvent(event) {
   if (event.Action === 'Invoke') {
     const invokeEvent = JSON.parse(event.body);
@@ -50,7 +54,7 @@ async function transformFromAwsRequest({
   const { pathname } = parseUrl(path);
 
   const filename = pathJoin(
-    '/var/task/user',
+    USER_DIR,
     process.env.NOW_ENTRYPOINT || pathname,
   );
 
@@ -61,8 +65,8 @@ function createCGIReq({ filename, path, host, method, headers }) {
   const { search } = parseUrl(path);
 
   const env = {
-    SERVER_ROOT: '/var/task/user',
-    DOCUMENT_ROOT: '/var/task/user',
+    SERVER_ROOT: USER_DIR,
+    DOCUMENT_ROOT: USER_DIR,
     SERVER_NAME: host,
     SERVER_PORT: 443,
     HTTPS: "On",
@@ -97,6 +101,10 @@ function createCGIReq({ filename, path, host, method, headers }) {
     var name = "HTTP_" + header.toUpperCase().replace(/-/g, "_");
     env[name] = headers[header];
   });
+
+  if (!isDev) {
+    env.PATH = `${PHP_DIR}:${process.env.PATH}`;
+  }
 
   return {
     env
@@ -155,20 +163,18 @@ function parseCGIHeaders(headers) {
 function query({ filename, path, host, headers, method, body }) {
   console.log(`🐘 Spawning: php-cgi ${filename}`);
 
-  const cgiReq = createCGIReq({ filename, path, host, headers, method })
+  const { env } = createCGIReq({ filename, path, host, headers, method })
 
   return new Promise((resolve) => {
     var response = '';
 
     const php = spawn(
-      './php-cgi',
+      'php-cgi',
       ['-c', 'php.ini', filename],
       {
         stdio: ['pipe', 'pipe', 'pipe'],
-        cwd: '/var/task/php',
-        env: {
-          ...cgiReq.env
-        }
+        cwd: PHP_DIR,
+        env
       },
     );
 
