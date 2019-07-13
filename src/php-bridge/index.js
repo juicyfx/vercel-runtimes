@@ -7,7 +7,6 @@ const {
   glob,
   download
 } = require('@now/build-utils');
-const FileFsRef = require('@now/build-utils/file-fs-ref.js');
 const launchers = require('./launchers');
 const configuration = require('./config');
 const writeFile = promisify(fs.writeFile);

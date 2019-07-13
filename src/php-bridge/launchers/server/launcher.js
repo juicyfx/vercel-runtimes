@@ -4,6 +4,10 @@ const { parse } = require('url');
 const { join: pathJoin, dirname: pathDirname } = require('path');
 const net = require('net');
 
+const PHP_DIR = pathJoin(process.env.LAMBDA_TASK_ROOT, 'php');
+const USER_DIR = pathJoin(process.env.LAMBDA_TASK_ROOT, 'user');
+const isDev = process.env.NOW_PHP_DEV === '1';
+
 let connection;
 
 function normalizeEvent(event) {
@@ -52,7 +56,7 @@ async function transformFromAwsRequest({
   const { pathname, search } = parse(path);
 
   const filename = pathJoin(
-    '/var/task/user',
+    USER_DIR,
     process.env.NOW_ENTRYPOINT || pathname,
   );
 
@@ -63,18 +67,21 @@ async function transformFromAwsRequest({
 
 async function startServer({ filename }) {
   const docRoot = pathDirname(filename);
+  const env = process.env;
+
+  if (!isDev) {
+    env.PATH = `${PHP_DIR}:${process.env.PATH}`;
+  }
 
   console.log(`🐘 Spawning: php-devserver at ${docRoot}`);
 
   const devserver = spawn(
-    './php',
+    'php',
     ['-c', 'php.ini', '-S', '127.0.0.1:8000', '-t', docRoot],
     {
       stdio: ['pipe', 'pipe', 'pipe'],
-      cwd: '/var/task/php',
-      env: {
-        ...process.env
-      }
+      cwd: PHP_DIR,
+      env
     },
   );
 
