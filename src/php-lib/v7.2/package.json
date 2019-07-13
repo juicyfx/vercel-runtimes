@@ -1,6 +1,6 @@
 {
   "name": "@juicyfx/php-lib-72",
-  "version": "0.0.5",
+  "version": "0.0.6-canary.1",
   "license": "MIT",
   "dependencies": {
     "@now/build-utils": "^0.6.0"

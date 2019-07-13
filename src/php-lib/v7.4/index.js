@@ -18,9 +18,6 @@ async function getFiles() {
     .replace(/\/opt\/now\/modules/g, '/var/task/php/modules');
   files['php/php.ini'] = phpini;
 
-  // Dump content of php.ini to known enabled extensions
-  console.log('🐘 PHP.ini', phpini.data.toString());
-
   return files;
 }
 
