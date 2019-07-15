@@ -32,7 +32,7 @@ exports.build = async ({
   };
 
   const includedFiles = {
-    ...await getIncludedFiles({ files, workPath, config, meta }),
+    ...await getIncludedFiles({ files, entrypoint, workPath, config, meta }),
     ...await getComposerFiles({ workPath, config })
   }
 

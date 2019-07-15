@@ -86,7 +86,7 @@ function getLauncherFiles(config) {
   }
 }
 
-async function getIncludedFiles({ files, workPath, config, meta }) {
+async function getIncludedFiles({ files, entrypoint, workPath, config, meta }) {
   // Download all files to workPath
   const downloadedFiles = await download(files, workPath, meta);
 
