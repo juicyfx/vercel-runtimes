@@ -62,7 +62,7 @@ async function transformFromAwsRequest({
 }
 
 function createCGIReq({ filename, path, host, method, headers }) {
-  const { search } = parseUrl(path);
+  const { query } = parseUrl(path);
 
   const env = {
     SERVER_ROOT: USER_DIR,
@@ -76,7 +76,7 @@ function createCGIReq({ filename, path, host, method, headers }) {
     SCRIPT_FILENAME: filename,
     PATH_TRANSLATED: filename,
     REQUEST_METHOD: method,
-    QUERY_STRING: search || '',
+    QUERY_STRING: query || '',
     GATEWAY_INTERFACE: "CGI/1.1",
     SERVER_PROTOCOL: "HTTP/1.1",
     PATH: process.env.PATH,
