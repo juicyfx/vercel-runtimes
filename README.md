@@ -9,6 +9,10 @@ Mainly for PHP with focus on latest versions and more proprietal configurations.
 🕹 <a href="https://f3l1x.io">f3l1x.io</a> | 💻 <a href="https://github.com/f3l1x">f3l1x</a> | 🐦 <a href="https://twitter.com/xf3l1x">@xf3l1x</a>
 </p>
 
+<p align=center>
+❗️PHP builder was separated into solo repository <a href="https://github.com/juicyfx/now-php">juicyfx/now-php</a> and builder renamed to now-php.❗️
+</p>
+
 ## 🐘 PHP
 
 **Builders**
