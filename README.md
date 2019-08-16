@@ -12,13 +12,24 @@ At this time this repository contain testing PHP and Markdown builders.
 
 ## Builders
 
-### [🐘 PHP](./docs/PHP.md)
+### Pure
 
 ```json
 {
   "version": 2,
   "builds": [
-    { "src": "index.php", "use": "@juicyfx/php" }
+    { "src": "file.xyz", "use": "@juicyfx/pure@canary" }
+  ]
+}
+```
+
+### [🐘 PHP](https://github.com/juicyfx/now-php)
+
+```json
+{
+  "version": 2,
+  "builds": [
+    { "src": "index.php", "use": "now-php" }
   ]
 }
 ```
