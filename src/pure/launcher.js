@@ -1,8 +1,3 @@
-const fs = require('fs');
-const { spawn } = require('child_process');
-const { join: pathJoin } = require('path');
-const { parse: parseUrl } = require('url');
-
 function normalizeEvent(event) {
   if (event.Action === 'Invoke') {
     const invokeEvent = JSON.parse(event.body);
@@ -56,7 +51,11 @@ function transformToAwsResponse(payload) {
 
 async function launcher(event) {
   const awsRequest = normalizeEvent(event);
-  console.log(awsRequest);
+
+  if (process.env.NOW_PURE_DEBUG) {
+    console.log(awsRequest);
+  }
+
   return transformToAwsResponse(awsRequest);
 }
 

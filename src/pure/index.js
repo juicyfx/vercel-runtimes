@@ -5,15 +5,9 @@ const {
 const FileFsRef = require('@now/build-utils/file-fs-ref.js');
 const path = require('path');
 
-exports.config = {
-  maxLambdaSize: '10mb',
-};
-
 exports.shouldServe = shouldServe;
 
-exports.build = async ({
-  files, entrypoint, workPath, config, meta,
-}) => {
+exports.build = async ({ entrypoint }) => {
   const bridgeFiles = {
     'launcher.js': new FileFsRef({
       fsPath: path.join(__dirname, 'launcher.js'),
@@ -29,9 +23,9 @@ exports.build = async ({
     runtime: 'nodejs10.x',
     environment: {
       NOW_ENTRYPOINT: entrypoint,
+      NOW_PURE_DEBUG: process.env.NOW_PURE_DEBUG,
     },
   });
 
   return { [entrypoint]: lambda };
 };
-
