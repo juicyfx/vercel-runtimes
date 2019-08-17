@@ -23,6 +23,11 @@ At this time this repository contain testing PHP and Markdown builders.
 }
 ```
 
+Examples:
+
+- https://now-builders-pure.juicyfx1.now.sh
+
+
 ### [🐘 PHP](https://github.com/juicyfx/now-php)
 
 ```json
@@ -33,6 +38,10 @@ At this time this repository contain testing PHP and Markdown builders.
   ]
 }
 ```
+
+Examples:
+
+- https://now-builders-php.juicyfx1.now.sh
 
 ### Markdown
 
@@ -58,18 +67,6 @@ At this time this repository contain testing PHP and Markdown builders.
   ]
 }
 ```
-
-## 📚 Resources
-
-- `now builders`: https://github.com/zeit/now-builders
-- `@now/php`: https://zeit.co/docs/v2/deployments/official-builders/php-now-php/
-- `bref.sh`: https://github.com/brefphp/bref
-- `stackery`: https://github.com/stackery/php-lambda-layer
-- https://github.com/umutc/aws-lambda-layer-php73/
-- https://github.com/ArtisanHost/php-cgi-lambda-build-script
-- https://github.com/stechstudio/php-lambda
-- https://github.com/araines/serverless-php
-- https://read.acloud.guru/serverless-php-630bb3e950f5
 
 ## 📝 License
 
