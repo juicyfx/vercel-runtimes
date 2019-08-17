@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "name": "now-builders-php",
+  "scope": "juicyfx",
+  "regions": ["all"],
+  "public": true,
+  "builds": [
+    { "src": "index.php", "use": "@juicyfx/php@canary"},
+    { "src": "php72.php", "use": "@juicyfx/php@canary", "config": { "v": "7.2" }},
+    { "src": "php73.php", "use": "@juicyfx/php@canary", "config": { "v": "7.3" }},
+    { "src": "php74.php", "use": "@juicyfx/php@canary", "config": { "v": "7.4" }},
+    { "src": "cgi.php", "use": "@juicyfx/php@canary", "config": { "v": "7.3", "mode": "cgi" }},
+    { "src": "cli.php", "use": "@juicyfx/php@canary", "config": { "v": "7.3", "mode": "cli" }},
+    { "src": "fpm.php", "use": "@juicyfx/php@canary", "config": { "v": "7.3", "mode": "fpm" }},
+    { "src": "server.php", "use": "@juicyfx/php@canary", "config": { "v": "7.3", "mode": "server" }}
+  ]
+}

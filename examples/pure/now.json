@@ -1,13 +1,10 @@
 {
-    "version": 2,
-    "name": "now-builders-pure",
-    "scope": "juicyfx",
-    "regions": ["all"],
-    "public": true,
-    "builds": [
-      { "src": "*.php", "use": "@juicyfx/pure@0.0.1-canary.3"}
-    ],
-    "env": {
-      "REV": "1"
-    }
-  }
+  "version": 2,
+  "name": "now-builders-pure",
+  "scope": "juicyfx",
+  "regions": ["all"],
+  "public": true,
+  "builds": [
+    { "src": "*.php", "use": "@juicyfx/pure@canary"}
+  ]
+}
