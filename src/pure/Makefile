@@ -1,5 +1,6 @@
 publish:
-	npm publish --access public
+	npm publish --access public --tag latest
 
-publish-dry:
-	npm publish --access public --dry
+publish-canary:
+	npm version prerelease
+	npm publish --access public --tag canary
