@@ -2,8 +2,8 @@
 
 <p align=center>
 The main goal is to provide experimental ZEIT Now Builders on steroids. <br/>
-The development started with PHP builder, which has been separated to <a href="https://github.com/juicyfx/now-php">juicyfx/now-php</a>. <br>
-At this time this repository contain testing PHP and Markdown builders.
+The development started with PHP builder, which has been separated into <a href="https://github.com/juicyfx/now-php">juicyfx/now-php</a>. <br>
+At this time this repository contains a testing version of PHP builder, Markdown builder and pure (testing) builder.
 </p>
 
 <p align=center>
