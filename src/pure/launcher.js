@@ -50,10 +50,14 @@ function transformToAwsResponse(payload) {
 }
 
 async function launcher(event) {
+  if (process.env.NOW_PURE_DEBUG) {
+    console.log('Event', event);
+  }
+
   const awsRequest = normalizeEvent(event);
 
   if (process.env.NOW_PURE_DEBUG) {
-    console.log(awsRequest);
+    console.log('Normalized event', awsRequest);
   }
 
   return transformToAwsResponse(awsRequest);
