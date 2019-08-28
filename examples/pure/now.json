@@ -5,7 +5,10 @@
   "regions": ["all"],
   "public": true,
   "builds": [
-    { "src": "*.php", "use": "@juicyfx/pure@canary"}
+    { "src": "index.js", "use": "@juicyfx/pure@canary"}
+  ],
+  "routes": [
+    { "src": "/(.*)", "dest": "/index.js" }
   ],
   "env": {
     "NOW_PURE_DEBUG": "1"
