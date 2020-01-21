@@ -41,7 +41,7 @@ Examples:
 
 Examples:
 
-- https://now-builders-php.juicyfx1.now.sh
+- https://php.jfx.cz/
 
 ### Markdown
 
