@@ -23,11 +23,6 @@ At this time this repository contains a testing version of PHP builder, Markdown
 }
 ```
 
-Examples:
-
-- https://now-builders-pure.juicyfx1.now.sh
-
-
 ### [🐘 PHP](https://github.com/juicyfx/now-php)
 
 ```json
@@ -41,7 +36,7 @@ Examples:
 
 Examples:
 
-- https://php.jfx.cz/
+- https://php.now.sh/
 
 ### Markdown
 
