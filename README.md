@@ -1,9 +1,13 @@
-<h1 align=center>Experimental ZEIT Now Builders</h1>
+<h1 align=center>Experimental Vercel Runtimes</h1>
 
 <p align=center>
-The main goal is to provide experimental ZEIT Now Builders on steroids. <br/>
+The main goal is to provide experimental Vercel Runtimes on steroids. <br/>
 The development started with PHP builder, which has been separated into <a href="https://github.com/juicyfx/now-php">juicyfx/now-php</a>. <br>
 At this time this repository contains a testing version of PHP builder, Markdown builder and pure (testing) builder.
+</p>
+
+<p align=center>
+🔥 This repository is deprecated, take a look at <a href="https://github.com/juicyfx/juicy">juicy monorepo</a>.
 </p>
 
 <p align=center>
