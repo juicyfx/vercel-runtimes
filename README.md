@@ -1,13 +1,9 @@
-<h1 align=center>Experimental Vercel Runtimes</h1>
+<h1 align=center>Vercel Runtimes</h1>
 
 <p align=center>
-The main goal is to provide experimental Vercel Runtimes on steroids. <br/>
-The development started with PHP builder, which has been separated into <a href="https://github.com/juicyfx/now-php">juicyfx/now-php</a>. <br>
-At this time this repository contains a testing version of PHP builder, Markdown builder and pure (testing) builder.
-</p>
-
-<p align=center>
-🔥 This repository is deprecated, take a look at <a href="https://github.com/juicyfx/juicy">juicy monorepo</a>.
+The main goal is to dig deeper into Vercel Runtimes. <br/>
+The development started with PHP builder, which has been separated into <a href="https://github.com/vercel-community/php">vercel-php</a>. <br>
+At this time this repository contains a testing versions of various runtimes.
 </p>
 
 <p align=center>
@@ -16,41 +12,34 @@ At this time this repository contains a testing version of PHP builder, Markdown
 
 ## Builders
 
-### Pure
+### Plain
 
 ```json
 {
-  "version": 2,
   "builds": [
-    { "src": "file.xyz", "use": "@juicyfx/pure@canary" }
+    { "src": "file.txt", "use": "vercel-plain@0.0.2" }
   ]
 }
 ```
 
-### [🐘 PHP](https://github.com/juicyfx/now-php)
+### [🐘 PHP](https://github.com/vercel-community/php)
 
 ```json
 {
-  "version": 2,
   "builds": [
-    { "src": "index.php", "use": "now-php" }
+    { "src": "index.php", "use": "vercel-php@0.5.2" }
   ]
 }
 ```
-
-Examples:
-
-- https://php.now.sh/
 
 ### Markdown
 
 ```json
 {
-  "version": 2,
   "builds": [
     {
       "src": "**/*.md",
-      "use": "@juicyfx/md@canary",
+      "use": "vercel-md@0.0.5",
       "config": {
       "title": "Demo Project",
       "css": [
@@ -65,6 +54,15 @@ Examples:
     }
   ]
 }
+```
+
+### Debug
+
+```json
+{
+  "builds": [
+    { "src": "file.txt", "use": "vercel-debug@0.0.1" }
+  ]
 ```
 
 ## 📝 License
