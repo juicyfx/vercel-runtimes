@@ -1,8 +1,0 @@
-{
-  "name": "@juicyfx/pure",
-  "version": "0.0.1-canary.5",
-  "license": "MIT",
-  "devDependencies": {
-    "@now/build-utils": "^0.6.0"
-  }
-}
